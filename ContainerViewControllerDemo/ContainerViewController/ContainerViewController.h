@@ -1,0 +1,21 @@
+//
+//  ZCContainerViewController.h
+//  ContainerViewControllerDemo
+//
+//  Created by zhangchao on 15/4/21.
+//  Copyright (c) 2015年 zhangchao. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "BaseModelController.h"
+
+@interface ContainerViewController : UIViewController
+@property(nonatomic, assign, readonly) NSUInteger count;
+@property(nonatomic, assign, readonly) NSUInteger currentIndex;
+@property(strong, nonatomic) BaseModelController *modelController;
+
+- (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index;
+- (void)swapToNextViewController;
+- (void)swapToPrevViewController;
+- (void)gotoViewControllerAtIndex:(NSUInteger)index;
+@end
