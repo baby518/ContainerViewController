@@ -10,11 +10,13 @@
 #import "BaseModelController.h"
 
 @interface ContainerViewController : UIViewController
+@property(nonatomic, assign, readonly) BOOL useScrollView;
 @property(nonatomic, assign, readonly) NSUInteger count;
 @property(nonatomic, assign, readonly) NSUInteger currentIndex;
 @property(strong, nonatomic) BaseModelController *modelController;
 
 - (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index;
+- (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index useScrollView:(BOOL)useScrollView;
 - (void)swapToNextViewController;
 - (void)swapToPrevViewController;
 - (void)gotoViewControllerAtIndex:(NSUInteger)index;

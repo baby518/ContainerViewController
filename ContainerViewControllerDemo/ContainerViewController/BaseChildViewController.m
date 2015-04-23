@@ -19,13 +19,18 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
-    UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeGesture:)];
-    [swipeLeft setDirection:UISwipeGestureRecognizerDirectionLeft];
-    [self.view addGestureRecognizer:swipeLeft];
+    NSLog(@"parent is ContainerViewController : %d", [self.parentViewController isKindOfClass:[ContainerViewController class]]);
 
-    UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeGesture:)];
-    [swipeRight setDirection:UISwipeGestureRecognizerDirectionRight];
-    [self.view addGestureRecognizer:swipeRight];
+//    if ([self.parentViewController isKindOfClass:[ContainerViewController class]]
+//            && !((ContainerViewController *) self.parentViewController).useScrollView) {
+        UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeGesture:)];
+        [swipeLeft setDirection:UISwipeGestureRecognizerDirectionLeft];
+        [self.view addGestureRecognizer:swipeLeft];
+
+        UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeGesture:)];
+        [swipeRight setDirection:UISwipeGestureRecognizerDirectionRight];
+        [self.view addGestureRecognizer:swipeRight];
+//    }
 }
 
 - (void)didReceiveMemoryWarning {
