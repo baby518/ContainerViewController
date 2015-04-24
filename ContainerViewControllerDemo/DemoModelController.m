@@ -28,11 +28,11 @@ NSString *const IDInStoryBoard = @"ChildViewController";
     return self;
 }
 
-- (UIViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
+- (BaseChildViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
     return [self viewControllerAtIndex:index storyboard:storyboard childID:IDInStoryBoard];
 }
 
-- (UIViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard childID:(NSString *)idString {
+- (BaseChildViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard childID:(NSString *)idString {
     // Return the data view controller for the given index.
     if (([self.dataArray count] == 0) || (index >= [self.dataArray count])) {
         return nil;

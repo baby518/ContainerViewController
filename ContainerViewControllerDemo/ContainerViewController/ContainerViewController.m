@@ -7,6 +7,7 @@
 //
 
 #import "ContainerViewController.h"
+#import "BaseChildViewController.h"
 
 @interface ContainerViewController () <UIScrollViewDelegate>
 @property(strong, nonatomic) UIViewController *prevViewController;
@@ -59,6 +60,12 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (UIViewController *)getViewControllerFromModel:(BaseModelController *)model atIndex:(NSUInteger)index {
+    BaseChildViewController *viewController = [model viewControllerAtIndex:index storyboard:self.storyboard];
+    viewController.parentDelegate = self;
+    return viewController;
+}
+
 - (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index useScrollView:(BOOL)useScrollView{
     _modelController = modelController;
     _count = _modelController.count;
@@ -72,16 +79,16 @@
         _index = index;
     }
 
-    _currentViewController = [self.modelController viewControllerAtIndex:_index storyboard:self.storyboard];
+    _currentViewController = [self getViewControllerFromModel:self.modelController atIndex:_index];
     [self addChildViewController:self.currentViewController];
 
     if (_index >= 1) {
-        _prevViewController = [self.modelController viewControllerAtIndex:_index - 1 storyboard:self.storyboard];
+        _prevViewController = [self getViewControllerFromModel:self.modelController atIndex:_index - 1];
         [self addChildViewController:_prevViewController];
     }
 
     if (_index <= _count - 2) {
-        _nextViewController = [self.modelController viewControllerAtIndex:_index + 1 storyboard:self.storyboard];
+        _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:_index + 1];
         [self addChildViewController:_nextViewController];
     }
 
@@ -105,8 +112,14 @@
     [self setModelController:modelController startIndex:0];
 }
 
-- (void)swapToNextViewController {
-    NSLog(@"swapToNextViewController");
+#pragma mark - ContainerParentDelegate
+- (BOOL)isUseScrollView {
+    return self.useScrollView;
+}
+
+- (void)swipeToNextViewController {
+    if (self.useScrollView) return;
+    NSLog(@"swipeToNextViewController");
     if (self.index >= self.count - 1) {
         self.index = self.count - 1;
         return;
@@ -135,7 +148,7 @@
                                 if (weakSelf.index >= weakSelf.count - 1) {
                                     weakSelf.nextViewController = nil;
                                 } else {
-                                    weakSelf.nextViewController = [weakSelf.modelController viewControllerAtIndex:weakSelf.index + 1 storyboard:self.storyboard];
+                                    weakSelf.nextViewController = [self getViewControllerFromModel:weakSelf.modelController atIndex:weakSelf.index + 1];
                                     [weakSelf addChildViewController:weakSelf.nextViewController];
                                 }
 
@@ -143,8 +156,9 @@
                             }];
 }
 
-- (void)swapToPrevViewController {
-    NSLog(@"swapToPrevViewController");
+- (void)swipeToPrevViewController {
+    if (self.useScrollView) return;
+    NSLog(@"swipeToPrevViewController");
     if (self.index <= 0) {
         self.index = 0;
         return;
@@ -173,7 +187,7 @@
                                 if (weakSelf.index <= 0) {
                                     weakSelf.prevViewController = nil;
                                 } else {
-                                    weakSelf.prevViewController = [weakSelf.modelController viewControllerAtIndex:weakSelf.index - 1 storyboard:self.storyboard];
+                                    weakSelf.prevViewController = [self getViewControllerFromModel:weakSelf.modelController atIndex:weakSelf.index - 1];
                                     [weakSelf addChildViewController:weakSelf.prevViewController];
                                 }
                                 NSLog(@"currentViewController %lu", weakSelf.index);
@@ -181,6 +195,7 @@
 }
 
 - (void)gotoViewControllerAtIndex:(NSUInteger)index {
+    if (self.useScrollView) return;
     NSLog(@"gotoViewController %lu --> %lu", self.index, index);
     if (self.index != index) {
         if (index <= 0) {
@@ -192,7 +207,7 @@
         [self.currentViewController willMoveToParentViewController:nil];
         [self.currentViewController removeFromParentViewController];
 
-        _currentViewController = [self.modelController viewControllerAtIndex:index storyboard:self.storyboard];
+        _currentViewController = [self getViewControllerFromModel:self.modelController atIndex:index];
         [self.currentViewController.view layoutIfNeeded];
 
         [self addChildViewController:self.currentViewController];
@@ -203,11 +218,11 @@
         self.index = index;
         NSLog(@"currentViewController %lu", self.index);
         if (self.index + 1 <= self.count - 1) {
-            self.nextViewController = [self.modelController viewControllerAtIndex:self.index + 1 storyboard:self.storyboard];
+            self.nextViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index + 1];
             [self addChildViewController:self.nextViewController];
         }
         if (self.index - 1 >= 0) {
-            self.prevViewController = [self.modelController viewControllerAtIndex:self.index - 1 storyboard:self.storyboard];
+            self.prevViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index - 1];
             [self addChildViewController:self.prevViewController];
         }
     }
@@ -215,6 +230,7 @@
 
 #pragma mark - UIScrollViewDelegate
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    if (!self.useScrollView) return;
     NSUInteger index = (NSUInteger) (fabs(scrollView.contentOffset.x) / scrollView.frame.size.width);
     NSLog(@"scrollViewDidEndDecelerating index : %d", index);
 }

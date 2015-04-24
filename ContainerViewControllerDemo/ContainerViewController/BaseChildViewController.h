@@ -8,5 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol ContainerParentDelegate;
+
 @interface BaseChildViewController : UIViewController
+@property (nonatomic, assign) id <ContainerParentDelegate> parentDelegate;
+
+- (void)swipeToNextViewController;
+- (void)swipeToPrevViewController;
+- (void)gotoViewControllerAtIndex:(NSUInteger)index;
 @end

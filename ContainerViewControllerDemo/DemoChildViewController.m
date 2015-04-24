@@ -7,7 +7,6 @@
 //
 
 #import "DemoChildViewController.h"
-#import "ContainerViewController.h"
 
 @interface DemoChildViewController ()
 
@@ -52,11 +51,9 @@
 }
 
 - (IBAction)jumpAction:(UIButton *)sender {
-    if ([self.parentViewController isKindOfClass:[ContainerViewController class]]) {
-        if (self.pageNumberStepper.value >= 0) {
-            NSUInteger index = (NSUInteger)self.pageNumberStepper.value - 1;
-            [(ContainerViewController *)self.parentViewController gotoViewControllerAtIndex:index];
-        }
+    if (self.pageNumberStepper.value >= 0) {
+        NSUInteger index = (NSUInteger)self.pageNumberStepper.value - 1;
+        [self gotoViewControllerAtIndex:index];
     }
 }
 @end

@@ -9,7 +9,16 @@
 #import <UIKit/UIKit.h>
 #import "BaseModelController.h"
 
-@interface ContainerViewController : UIViewController
+//@class BaseModelController;
+
+@protocol ContainerParentDelegate <NSObject>
+- (BOOL)isUseScrollView;
+- (void)swipeToNextViewController;
+- (void)swipeToPrevViewController;
+- (void)gotoViewControllerAtIndex:(NSUInteger)index;
+@end
+
+@interface ContainerViewController : UIViewController <ContainerParentDelegate>
 @property(nonatomic, assign, readonly) BOOL useScrollView;
 @property(nonatomic, assign, readonly) NSUInteger count;
 @property(nonatomic, assign, readonly) NSUInteger currentIndex;
@@ -17,7 +26,4 @@
 
 - (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index;
 - (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index useScrollView:(BOOL)useScrollView;
-- (void)swapToNextViewController;
-- (void)swapToPrevViewController;
-- (void)gotoViewControllerAtIndex:(NSUInteger)index;
 @end
