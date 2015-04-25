@@ -314,24 +314,24 @@
 
     // if has prev, set current offset is 1 * width; like it : prev<--current
     // otherwise, set current offset is 0; like it : current-->next
-    CGFloat offset = self.prevViewController == nil ? 0 : pageViewRect.size.width;
+    CGFloat offset = self.prevViewController == nil ? pageViewRect.origin.x : pageViewRect.origin.x + pageViewRect.size.width;
 
     // 3. add all view
     [self.scrollView addSubview:self.currentViewController.view];
-    self.currentViewController.view.frame = CGRectMake(pageViewRect.origin.x + offset, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
+    self.currentViewController.view.frame = CGRectMake(offset, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
     _scrollCount++;
 
     // add prev view
     if (self.prevViewController != nil) {
         [self.scrollView insertSubview:self.prevViewController.view aboveSubview:self.currentViewController.view];
-        self.prevViewController.view.frame = CGRectMake(pageViewRect.origin.x - pageViewRect.size.width + offset, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
+        self.prevViewController.view.frame = CGRectMake(offset - pageViewRect.size.width, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
         _scrollCount++;
     }
 
     // add next view
     if (self.nextViewController != nil) {
         [self.scrollView insertSubview:self.nextViewController.view belowSubview:self.currentViewController.view];
-        self.nextViewController.view.frame = CGRectMake(pageViewRect.origin.x + pageViewRect.size.width + offset, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
+        self.nextViewController.view.frame = CGRectMake(offset + pageViewRect.size.width, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
         _scrollCount++;
     }
 
@@ -341,7 +341,7 @@
     self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width * self.scrollCount, self.view.frame.size.height);
 
     // set current position.
-    [self.scrollView setContentOffset:CGPointMake(pageViewRect.origin.x + offset, pageViewRect.origin.y) animated:NO];
+    [self.scrollView setContentOffset:CGPointMake(offset, pageViewRect.origin.y) animated:NO];
 }
 /*
 #pragma mark - Navigation
