@@ -16,8 +16,6 @@
 @property(strong, nonatomic) UIViewController *nextViewController;
 // this index is index of model's viewControllers' index.
 @property(assign, nonatomic) NSUInteger index;
-// this count must < 3, maybe 1 or 2 or 3;
-@property(assign, nonatomic) NSUInteger scrollCount;
 
 @property(strong, nonatomic) UIScrollView *scrollView;
 @end
@@ -33,9 +31,8 @@
     // Do any additional setup after loading the view.
 
     if (self.useScrollView) {
-        _scrollCount = 0;
         _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height)];
-//        self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width * self.count, self.view.frame.size.height);
+        self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width * self.count, self.view.frame.size.height);
         self.scrollView.scrollEnabled = YES;
         self.scrollView.delegate = self;
         self.scrollView.bounces = NO;
@@ -233,15 +230,14 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     if (!self.useScrollView) return;
     NSUInteger scrollIndex = (NSUInteger) (fabs(scrollView.contentOffset.x) / scrollView.frame.size.width);
-    NSUInteger currentIndex = self.prevViewController == nil ? 0 : 1;
-//    NSLog(@"scrollViewDidEndDecelerating %d --> %d", currentIndex, scrollIndex);
+    NSLog(@"scrollViewDidEndDecelerating %d --> %d", self.index, scrollIndex);
 
-    if (scrollIndex > currentIndex) {
+    if (scrollIndex > self.index) {
         // to right
-        [self scrollToViewControllerAtIndex:self.index + 1];
-    } else if (scrollIndex < currentIndex) {
+        [self scrollToViewControllerAtIndex:scrollIndex];
+    } else if (scrollIndex < self.index) {
         // to left
-        [self scrollToViewControllerAtIndex:self.index - 1];
+        [self scrollToViewControllerAtIndex:scrollIndex];
     }
 }
 
@@ -296,9 +292,6 @@
             }
         }
 
-        // set 0 here, re calc it in relocateViewController();
-        _scrollCount = 0;
-
         self.index = index;
 
         // show all views
@@ -314,31 +307,23 @@
 
     // if has prev, set current offset is 1 * width; like it : prev<--current
     // otherwise, set current offset is 0; like it : current-->next
-    CGFloat offset = self.prevViewController == nil ? pageViewRect.origin.x : pageViewRect.origin.x + pageViewRect.size.width;
+    CGFloat offset = self.prevViewController == nil ? pageViewRect.origin.x : pageViewRect.origin.x + pageViewRect.size.width * self.index;
 
     // 3. add all view
     [self.scrollView addSubview:self.currentViewController.view];
     self.currentViewController.view.frame = CGRectMake(offset, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
-    _scrollCount++;
 
     // add prev view
     if (self.prevViewController != nil) {
         [self.scrollView insertSubview:self.prevViewController.view aboveSubview:self.currentViewController.view];
         self.prevViewController.view.frame = CGRectMake(offset - pageViewRect.size.width, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
-        _scrollCount++;
     }
 
     // add next view
     if (self.nextViewController != nil) {
         [self.scrollView insertSubview:self.nextViewController.view belowSubview:self.currentViewController.view];
         self.nextViewController.view.frame = CGRectMake(offset + pageViewRect.size.width, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
-        _scrollCount++;
     }
-
-    NSAssert(self.scrollCount <= 3, @"self.scrollCount must be <= 3, current is %lu", self.scrollCount);
-    // set contentSize, max is 3.
-    NSLog(@"relocateViewController scrollCount : %lu", self.scrollCount);
-    self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width * self.scrollCount, self.view.frame.size.height);
 
     // set current position.
     [self.scrollView setContentOffset:CGPointMake(offset, pageViewRect.origin.y) animated:NO];
