@@ -66,7 +66,7 @@
     _modelController = modelController;
     _count = self.modelController.count;
     _useScrollView = useScrollView;
-    NSLog(@"setModelController : %d/%d", index, self.count);
+    NSLog(@"setModelController : %lu/%lu", index, self.count);
     if (index >= self.count - 1) {
         _index = self.count - 1;
     } else if (index <= 0) {
@@ -246,7 +246,7 @@
 }
 
 - (void)scrollToViewControllerAtIndex:(NSUInteger)index {
-    NSLog(@"scrollToViewControllerAtIndex %d --> %d", self.index, index);
+    NSLog(@"scrollToViewControllerAtIndex %lu --> %lu", self.index, index);
 
     if (self.index != index) {
         if (index <= 0) {
@@ -325,9 +325,9 @@
         _scrollCount++;
     }
 
-    NSAssert(self.scrollCount <= 3, @"self.scrollCount must be <= 3, current is %d", self.scrollCount);
+    NSAssert(self.scrollCount <= 3, @"self.scrollCount must be <= 3, current is %lu", self.scrollCount);
     // set contentSize, max is 3.
-    NSLog(@"relocateViewController scrollCount : %d", self.scrollCount);
+    NSLog(@"relocateViewController scrollCount : %lu", self.scrollCount);
     self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width * self.scrollCount, self.view.frame.size.height);
 
     // set current position.

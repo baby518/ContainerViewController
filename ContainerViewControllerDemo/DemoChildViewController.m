@@ -28,7 +28,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.dataLabel.text = [self.data description];
-    self.pageNumberTextField.text = [NSString stringWithFormat:@"%d/%d", self.pageNumber, self.pageCount];
+    self.pageNumberTextField.text = [NSString stringWithFormat:@"%lu/%lu", self.pageNumber, self.pageCount];
     self.pageNumberStepper.maximumValue = self.pageCount;
     self.pageNumberStepper.minimumValue = 1;
     self.pageNumberStepper.value = self.pageNumber;
@@ -47,7 +47,7 @@
 - (IBAction)pageNumberStepperChanged:(UIStepper *)sender {
     int stepValue = sender.value;
     self.pageNumber = stepValue;
-    self.pageNumberTextField.text = [NSString stringWithFormat:@"%d/%d", self.pageNumber, self.pageCount];
+    self.pageNumberTextField.text = [NSString stringWithFormat:@"%lu/%lu", self.pageNumber, self.pageCount];
 }
 
 - (IBAction)jumpAction:(UIButton *)sender {
