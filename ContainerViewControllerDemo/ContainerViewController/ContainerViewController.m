@@ -258,35 +258,48 @@
         // get all views need
         // 1. remove it
         [self.currentViewController.view removeFromSuperview];
-        _scrollCount--;
-
-        // 2. create it
-        _currentViewController = [self getViewControllerFromModel:self.modelController atIndex:index];
-
-        self.index = index;
-
-        // 1. remove it
-        if (self.prevViewController != nil) {
-            [self.prevViewController.view removeFromSuperview];
-            _prevViewController = nil;
-            _scrollCount--;
-        }
-        if (self.index >= 1) {
-            // 2. create it
-            _prevViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index - 1];
-        }
-
-        // 1. remove it
         if (self.nextViewController != nil) {
             [self.nextViewController.view removeFromSuperview];
-            _nextViewController = nil;
-            _scrollCount--;
+        }
+        if (self.prevViewController != nil) {
+            [self.prevViewController.view removeFromSuperview];
         }
 
-        if (self.index <= self.count - 2) {
-            // 2. create it
-            _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index + 1];
+        // 2. create it
+        if (self.index == index - 1) {
+            _prevViewController = self.currentViewController;
+            _currentViewController = self.nextViewController;
+            if (index <= self.count - 2) {
+                _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 1];
+            } else {
+                _nextViewController = nil;
+            }
+        } else if (self.index == index + 1) {
+            _nextViewController = self.currentViewController;
+            _currentViewController = self.prevViewController;
+            if (index >= 1) {
+                _prevViewController = [self getViewControllerFromModel:self.modelController atIndex:index - 1];
+            } else {
+                _prevViewController = nil;
+            }
+        } else {
+            _currentViewController = [self getViewControllerFromModel:self.modelController atIndex:index];
+            if (index <= self.count - 2) {
+                _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 1];
+            } else {
+                _nextViewController = nil;
+            }
+            if (index >= 1) {
+                _prevViewController = [self getViewControllerFromModel:self.modelController atIndex:index - 1];
+            } else {
+                _prevViewController = nil;
+            }
         }
+
+        // set 0 here, re calc it in relocateViewController();
+        _scrollCount = 0;
+
+        self.index = index;
 
         // show all views
         [self relocateViewController];
