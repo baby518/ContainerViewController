@@ -19,7 +19,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
-    NSLog(@"viewDidLoad parentDelegate isUseScrollView : %d", self.parentDelegate == nil ? -1 : self.parentDelegate.isUseScrollView);
+//    NSLog(@"viewDidLoad parentDelegate isUseScrollView : %d", self.parentDelegate == nil ? -1 : self.parentDelegate.isUseScrollView);
 
     if (self.parentDelegate != nil && !self.parentDelegate.isUseScrollView) {
         UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeGesture:)];

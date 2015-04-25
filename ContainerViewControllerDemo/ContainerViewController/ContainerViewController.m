@@ -32,8 +32,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
-    NSLog(@"ContainerViewController viewDidLoad : %f x %f", self.view.frame.size.width, self.view.frame.size.height);
-
     if (self.useScrollView) {
         _scrollCount = 0;
         _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height)];
@@ -58,6 +56,7 @@
 }
 
 - (UIViewController *)getViewControllerFromModel:(BaseModelController *)model atIndex:(NSUInteger)index {
+    NSLog(@"getViewControllerFromModel : %lu", index);
     BaseChildViewController *viewController = [model viewControllerAtIndex:index storyboard:self.storyboard];
     viewController.parentDelegate = self;
     return viewController;
@@ -235,7 +234,7 @@
     if (!self.useScrollView) return;
     NSUInteger scrollIndex = (NSUInteger) (fabs(scrollView.contentOffset.x) / scrollView.frame.size.width);
     NSUInteger currentIndex = self.prevViewController == nil ? 0 : 1;
-    NSLog(@"scrollViewDidEndDecelerating %d --> %d", currentIndex, scrollIndex);
+//    NSLog(@"scrollViewDidEndDecelerating %d --> %d", currentIndex, scrollIndex);
 
     if (scrollIndex > currentIndex) {
         // to right
@@ -302,7 +301,6 @@
     [self.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
 
     CGRect pageViewRect = self.scrollView.bounds;
-    NSLog(@"relocateViewController pageViewRect start : %f,%f , size : %f x %f", pageViewRect.origin.x, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
 
     // if has prev, set current offset is 1 * width; like it : prev<--current
     // otherwise, set current offset is 0; like it : current-->next

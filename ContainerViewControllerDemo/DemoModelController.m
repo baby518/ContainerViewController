@@ -44,8 +44,6 @@ NSString *const IDInStoryBoard = @"ChildViewController";
     childViewController.pageNumber = index + 1;
     childViewController.pageCount = self.count;
 
-    NSLog(@"viewControllerAtIndex : %lu, data : %@", index, self.dataArray[index]);
-
     return childViewController;
 }
 
