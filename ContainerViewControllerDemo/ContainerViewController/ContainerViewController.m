@@ -233,10 +233,17 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     if (!self.useScrollView) return;
-    NSUInteger index = (NSUInteger) (fabs(scrollView.contentOffset.x) / scrollView.frame.size.width);
-    NSLog(@"scrollViewDidEndDecelerating index : %d", index);
-    _index = index;
-//    [self scrollToViewControllerAtIndex:index];
+    NSUInteger scrollIndex = (NSUInteger) (fabs(scrollView.contentOffset.x) / scrollView.frame.size.width);
+    NSUInteger currentIndex = self.prevViewController == nil ? 0 : 1;
+    NSLog(@"scrollViewDidEndDecelerating %d --> %d", currentIndex, scrollIndex);
+
+    if (scrollIndex > currentIndex) {
+        // to right
+        [self scrollToViewControllerAtIndex:self.index + 1];
+    } else if (scrollIndex < currentIndex) {
+        // to left
+        [self scrollToViewControllerAtIndex:self.index - 1];
+    }
 }
 
 - (void)scrollToViewControllerAtIndex:(NSUInteger)index {
