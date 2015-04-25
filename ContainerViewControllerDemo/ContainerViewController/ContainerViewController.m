@@ -262,7 +262,6 @@
 
         // 2. create it
         _currentViewController = [self getViewControllerFromModel:self.modelController atIndex:index];
-        [self addChildViewController:self.currentViewController];
 
         self.index = index;
 
@@ -275,7 +274,6 @@
         if (self.index >= 1) {
             // 2. create it
             _prevViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index - 1];
-            [self addChildViewController:self.prevViewController];
         }
 
         // 1. remove it
@@ -288,7 +286,6 @@
         if (self.index <= self.count - 2) {
             // 2. create it
             _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index + 1];
-            [self addChildViewController:self.nextViewController];
         }
 
         // show all views
