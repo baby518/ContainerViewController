@@ -47,39 +47,8 @@
 
         [self.view addSubview:_scrollView];
 
-        // show current view
-        CGRect pageViewRect = self.scrollView.bounds;
-
-        // if has prev, set current offset is 1 * width; like it : prev<--current
-        // otherwise, set current offset is 0; like it : current-->next
-        CGFloat offset = self.prevViewController == nil ? 0 : pageViewRect.size.width;
-
-        [self.scrollView addSubview:self.currentViewController.view];
-        self.currentViewController.view.frame = CGRectMake(pageViewRect.origin.x + offset, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
-//        NSLog(@"ContainerViewController pageViewRect start : %f,%f , size : %f x %f", pageViewRect.origin.x, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
-        _scrollCount++;
-
-        // add prev view
-        if (self.prevViewController != nil) {
-            [self.scrollView insertSubview:self.prevViewController.view aboveSubview:self.currentViewController.view];
-            self.prevViewController.view.frame = CGRectMake(pageViewRect.origin.x - pageViewRect.size.width + offset, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
-            _scrollCount++;
-        }
-
-        // add next view
-        if (self.nextViewController != nil) {
-            [self.scrollView insertSubview:self.nextViewController.view belowSubview:self.currentViewController.view];
-            self.nextViewController.view.frame = CGRectMake(pageViewRect.origin.x + pageViewRect.size.width + offset, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
-            _scrollCount++;
-        }
-
-        NSAssert(self.scrollCount <= 3, @"self.scrollCount must be <= 3");
-        // set contentSize, max is 3.
-        NSLog(@"viewDidLoad scrollCount : %d", self.scrollCount);
-        self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width * self.scrollCount, self.view.frame.size.height);
-
-        // set current position.
-        [self.scrollView setContentOffset:CGPointMake(pageViewRect.origin.x + offset, pageViewRect.origin.y) animated:YES];
+        // show all views
+        [self relocateViewController];
     }
 }
 
@@ -266,6 +235,7 @@
     if (!self.useScrollView) return;
     NSUInteger index = (NSUInteger) (fabs(scrollView.contentOffset.x) / scrollView.frame.size.width);
     NSLog(@"scrollViewDidEndDecelerating index : %d", index);
+    _index = index;
 //    [self scrollToViewControllerAtIndex:index];
 }
 
@@ -279,9 +249,7 @@
             index = self.count - 1;
         }
 
-        // show current view
-        CGRect pageViewRect = self.scrollView.bounds;
-
+        // get all views need
         // 1. remove it
         [self.currentViewController.view removeFromSuperview];
         _scrollCount--;
@@ -290,48 +258,75 @@
         _currentViewController = [self getViewControllerFromModel:self.modelController atIndex:index];
         [self addChildViewController:self.currentViewController];
 
-        // 3. re add it
-        [self.scrollView addSubview:self.currentViewController.view];
-        self.currentViewController.view.frame = pageViewRect;
-        NSLog(@"ContainerViewController pageViewRect start : %f,%f , size : %f x %f", pageViewRect.origin.x, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
-        _scrollCount++;
-
         self.index = index;
+
+        // 1. remove it
+        if (self.prevViewController != nil) {
+            [self.prevViewController.view removeFromSuperview];
+            _prevViewController = nil;
+            _scrollCount--;
+        }
         if (self.index >= 1) {
-            // 1. remove it
-            if (self.prevViewController != nil) {
-                [self.prevViewController.view removeFromSuperview];
-                _scrollCount--;
-            }
             // 2. create it
             _prevViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index - 1];
             [self addChildViewController:self.prevViewController];
-            // 3. re add it
-            [self.scrollView insertSubview:self.prevViewController.view aboveSubview:self.currentViewController.view];
-            self.prevViewController.view.frame = CGRectMake(pageViewRect.origin.x - pageViewRect.size.width, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
-            _scrollCount++;
+        }
+
+        // 1. remove it
+        if (self.nextViewController != nil) {
+            [self.nextViewController.view removeFromSuperview];
+            _nextViewController = nil;
+            _scrollCount--;
         }
 
         if (self.index <= self.count - 2) {
-            // 1. remove it
-            if (self.nextViewController != nil) {
-                [self.nextViewController.view removeFromSuperview];
-                _scrollCount--;
-            }
             // 2. create it
             _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index + 1];
             [self addChildViewController:self.nextViewController];
-            // 3. re add it
-            [self.scrollView insertSubview:self.nextViewController.view belowSubview:self.currentViewController.view];
-            self.nextViewController.view.frame = CGRectMake(pageViewRect.origin.x + pageViewRect.size.width, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
-            _scrollCount++;
         }
 
-        NSAssert(self.scrollCount <= 3, @"self.scrollCount must be <= 3");
-        // set contentSize, max is 3.
-        NSLog(@"scrollToViewControllerAtIndex scrollCount : %d", self.scrollCount);
-        self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width * self.scrollCount, self.view.frame.size.height);
+        // show all views
+        [self relocateViewController];
     }
+}
+
+- (void)relocateViewController {
+    // reset current position to 0,0 first.
+    [self.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
+
+    CGRect pageViewRect = self.scrollView.bounds;
+    NSLog(@"relocateViewController pageViewRect start : %f,%f , size : %f x %f", pageViewRect.origin.x, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
+
+    // if has prev, set current offset is 1 * width; like it : prev<--current
+    // otherwise, set current offset is 0; like it : current-->next
+    CGFloat offset = self.prevViewController == nil ? 0 : pageViewRect.size.width;
+
+    // 3. add all view
+    [self.scrollView addSubview:self.currentViewController.view];
+    self.currentViewController.view.frame = CGRectMake(pageViewRect.origin.x + offset, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
+    _scrollCount++;
+
+    // add prev view
+    if (self.prevViewController != nil) {
+        [self.scrollView insertSubview:self.prevViewController.view aboveSubview:self.currentViewController.view];
+        self.prevViewController.view.frame = CGRectMake(pageViewRect.origin.x - pageViewRect.size.width + offset, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
+        _scrollCount++;
+    }
+
+    // add next view
+    if (self.nextViewController != nil) {
+        [self.scrollView insertSubview:self.nextViewController.view belowSubview:self.currentViewController.view];
+        self.nextViewController.view.frame = CGRectMake(pageViewRect.origin.x + pageViewRect.size.width + offset, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
+        _scrollCount++;
+    }
+
+    NSAssert(self.scrollCount <= 3, @"self.scrollCount must be <= 3, current is %d", self.scrollCount);
+    // set contentSize, max is 3.
+    NSLog(@"relocateViewController scrollCount : %d", self.scrollCount);
+    self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width * self.scrollCount, self.view.frame.size.height);
+
+    // set current position.
+    [self.scrollView setContentOffset:CGPointMake(pageViewRect.origin.x + offset, pageViewRect.origin.y) animated:NO];
 }
 /*
 #pragma mark - Navigation
