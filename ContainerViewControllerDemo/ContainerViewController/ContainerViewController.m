@@ -90,12 +90,12 @@
         [self addChildViewController:self.prevPrevViewController];
     }
 
-    if (self.index <= self.count - 2) {
+    if (self.index + 2 <= self.count) {
         _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index + 1];
         [self addChildViewController:self.nextViewController];
     }
 
-    if (self.useLargeReuse && self.count - 3) {
+    if (self.useLargeReuse && self.index + 3 <= self.count) {
         _nextNextViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index + 2];
         [self addChildViewController:self.nextNextViewController];
     }
@@ -215,7 +215,7 @@
         if (self.index != index) {
             if (index <= 0) {
                 index = 0;
-            } else if (index >= self.count - 1) {
+            } else if (index + 1 >= self.count) {
                 index = self.count - 1;
             }
 
@@ -232,11 +232,11 @@
             // relocate prev<--cur-->next
             _index = index;
             NSLog(@"currentViewController %lu", self.index);
-            if (self.index + 1 <= self.count - 1) {
+            if (self.index + 2 <= self.count) {
                 _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index + 1];
                 [self addChildViewController:self.nextViewController];
             }
-            if (self.index - 1 >= 0) {
+            if (self.index >= 1) {
                 _prevViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index - 1];
                 [self addChildViewController:self.prevViewController];
             }
@@ -249,7 +249,7 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     if (!self.useScrollView) return;
     NSUInteger scrollIndex = (NSUInteger) (fabs(scrollView.contentOffset.x) / scrollView.frame.size.width);
-    NSLog(@"scrollViewDidEndDecelerating %d --> %d", self.index, scrollIndex);
+    NSLog(@"scrollViewDidEndDecelerating %lu --> %lu", self.index, scrollIndex);
 
     if (scrollIndex > self.index) {
         // to right
@@ -266,7 +266,7 @@
     if (self.index != index) {
         if (index <= 0) {
             index = 0;
-        } else if (index >= self.count - 1) {
+        } else if (index + 1 >= self.count) {
             index = self.count - 1;
         }
 
@@ -293,12 +293,12 @@
             _prevPrevViewController = self.currentViewController;
             _prevViewController = self.nextViewController;
             _currentViewController = self.nextNextViewController;
-            if (index <= self.count - 2) {
+            if (index + 2 <= self.count) {
                 _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 1];
             } else {
                 _nextViewController = nil;
             }
-            if (index <= self.count - 3) {
+            if (index + 3 <= self.count) {
                 _nextNextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 2];
             } else {
                 _nextNextViewController = nil;
@@ -309,10 +309,10 @@
             }
             _prevViewController = self.currentViewController;
             _currentViewController = self.nextViewController;
-            if (index <= self.count - 2) {
+            if (index + 2 <= self.count) {
                 if (self.useLargeReuse) {
                     _nextViewController = self.nextNextViewController;
-                    if (index <= self.count - 3) {
+                    if (index + 3 <= self.count) {
                         _nextNextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 2];
                     } else {
                         _nextNextViewController = nil;
@@ -323,7 +323,7 @@
             } else {
                 _nextViewController = nil;
             }
-        } else if (index == self.index - 1) {
+        } else if (index + 1 == self.index) {
             if (self.useLargeReuse) {
                 _nextNextViewController = self.nextViewController;
             }
@@ -343,7 +343,7 @@
             } else {
                 _prevViewController = nil;
             }
-        } else if (self.useLargeReuse && index == self.index - 2) {
+        } else if (self.useLargeReuse && index + 2 == self.index) {
             _nextNextViewController = self.currentViewController;
             _nextViewController = self.prevViewController;
             _currentViewController = self.prevPrevViewController;
@@ -359,12 +359,12 @@
             }
         } else {
             _currentViewController = [self getViewControllerFromModel:self.modelController atIndex:index];
-            if (self.useLargeReuse && index <= self.count - 3) {
+            if (self.useLargeReuse && index + 3 <= self.count) {
                 _nextNextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 2];
             } else {
                 _nextNextViewController = nil;
             }
-            if (index <= self.count - 2) {
+            if (index + 2 <= self.count) {
                 _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 1];
             } else {
                 _nextViewController = nil;
