@@ -21,8 +21,10 @@
     DemoModelController *modelController = [[DemoModelController alloc] init];
     _containerViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ContainerViewController"];
 
-    self.containerViewController.modelController = modelController;
-//    [self.containerViewController setModelController:modelController startIndex:0];
+//    self.containerViewController.modelController = modelController;
+//    [self.containerViewController setModelController:modelController startIndex:4];
+//    [self.containerViewController setModelController:modelController startIndex:4 useScrollView:YES];
+    [self.containerViewController setModelController:modelController startIndex:6 useScrollView:YES useLargeReuse:YES];
 
     [self addChildViewController:self.containerViewController];
     [self.view addSubview:self.containerViewController.view];

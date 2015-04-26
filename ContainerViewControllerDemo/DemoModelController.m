@@ -19,9 +19,9 @@ NSString *const IDInStoryBoard = @"ChildViewController";
     self = [super init];
     if (self) {
         // Create the data model.
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        _dataArray = [[dateFormatter weekdaySymbols] copy];
-//        _dataArray = @[@"A", @"B"];
+//        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+//        _dataArray = [[dateFormatter weekdaySymbols] copy];
+        _dataArray = @[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J"];
         
         self.count = _dataArray.count;
     }
