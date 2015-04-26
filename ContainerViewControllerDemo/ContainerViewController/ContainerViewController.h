@@ -24,6 +24,8 @@
 @property(nonatomic, assign, readonly) NSUInteger currentIndex;
 @property(strong, nonatomic) BaseModelController *modelController;
 
+- (void)setModelController:(BaseModelController *)modelController;
 - (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index;
 - (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index useScrollView:(BOOL)useScrollView;
+- (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index useScrollView:(BOOL)useScrollView useLargeReuse:(BOOL)useLargeReuse;
 @end

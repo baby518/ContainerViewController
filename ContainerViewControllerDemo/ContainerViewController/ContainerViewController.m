@@ -10,10 +10,14 @@
 #import "BaseChildViewController.h"
 
 @interface ContainerViewController () <UIScrollViewDelegate>
+@property(nonatomic, assign) BOOL useLargeReuse;
 // use 3 view controllers,  prev<--current-->next
+// if useLargeReuseCount, has 5 view controllers,  prevPrev<--prev<--current-->next-->nextNext
+@property(strong, nonatomic) UIViewController *prevPrevViewController;
 @property(strong, nonatomic) UIViewController *prevViewController;
 @property(strong, nonatomic) UIViewController *currentViewController;
 @property(strong, nonatomic) UIViewController *nextViewController;
+@property(strong, nonatomic) UIViewController *nextNextViewController;
 // this index is index of model's viewControllers' index.
 @property(assign, nonatomic) NSUInteger index;
 
@@ -59,10 +63,11 @@
     return viewController;
 }
 
-- (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index useScrollView:(BOOL)useScrollView {
+- (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index useScrollView:(BOOL)useScrollView useLargeReuse:(BOOL)useLargeReuse {
     _modelController = modelController;
     _count = self.modelController.count;
     _useScrollView = useScrollView;
+    _useLargeReuse = useLargeReuse;
     NSLog(@"setModelController : %lu/%lu", index, self.count);
     if (index >= self.count - 1) {
         _index = self.count - 1;
@@ -80,9 +85,19 @@
         [self addChildViewController:self.prevViewController];
     }
 
+    if (self.useLargeReuse && self.index >= 2) {
+        _prevPrevViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index - 2];
+        [self addChildViewController:self.prevPrevViewController];
+    }
+
     if (self.index <= self.count - 2) {
         _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index + 1];
         [self addChildViewController:self.nextViewController];
+    }
+
+    if (self.useLargeReuse && self.count - 3) {
+        _nextNextViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index + 2];
+        [self addChildViewController:self.nextNextViewController];
     }
 
     if (!self.useScrollView) {
@@ -95,6 +110,10 @@
 
         [self.currentViewController didMoveToParentViewController:self];
     }
+}
+
+- (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index useScrollView:(BOOL)useScrollView {
+    [self setModelController:modelController startIndex:index useScrollView:false useLargeReuse:false];
 }
 
 - (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index {
@@ -260,26 +279,91 @@
         if (self.prevViewController != nil) {
             [self.prevViewController.view removeFromSuperview];
         }
+        if (self.useLargeReuse) {
+            if (self.nextNextViewController != nil) {
+                [self.nextNextViewController.view removeFromSuperview];
+            }
+            if (self.prevPrevViewController != nil) {
+                [self.prevPrevViewController.view removeFromSuperview];
+            }
+        }
 
         // 2. create it
-        if (self.index == index - 1) {
+        if (self.useLargeReuse && index == self.index + 2) {
+            _prevPrevViewController = self.currentViewController;
+            _prevViewController = self.nextViewController;
+            _currentViewController = self.nextNextViewController;
+            if (index <= self.count - 2) {
+                _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 1];
+            } else {
+                _nextViewController = nil;
+            }
+            if (index <= self.count - 3) {
+                _nextNextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 2];
+            } else {
+                _nextNextViewController = nil;
+            }
+        } else if (index == self.index + 1) {
+            if (self.useLargeReuse) {
+                _prevPrevViewController = self.prevViewController;
+            }
             _prevViewController = self.currentViewController;
             _currentViewController = self.nextViewController;
             if (index <= self.count - 2) {
-                _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 1];
+                if (self.useLargeReuse) {
+                    _nextViewController = self.nextNextViewController;
+                    if (index <= self.count - 3) {
+                        _nextNextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 2];
+                    } else {
+                        _nextNextViewController = nil;
+                    }
+                } else {
+                    _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 1];
+                }
             } else {
                 _nextViewController = nil;
             }
-        } else if (self.index == index + 1) {
+        } else if (index == self.index - 1) {
+            if (self.useLargeReuse) {
+                _nextNextViewController = self.nextViewController;
+            }
             _nextViewController = self.currentViewController;
             _currentViewController = self.prevViewController;
+            if (index >= 1) {
+                if (self.useLargeReuse) {
+                    _prevViewController = self.prevPrevViewController;
+                    if (index >= 2) {
+                        _prevPrevViewController = [self getViewControllerFromModel:self.modelController atIndex:index - 2];
+                    } else {
+                        _prevPrevViewController = nil;
+                    }
+                } else {
+                    _prevViewController = [self getViewControllerFromModel:self.modelController atIndex:index - 1];
+                }
+            } else {
+                _prevViewController = nil;
+            }
+        } else if (self.useLargeReuse && index == self.index - 2) {
+            _nextNextViewController = self.currentViewController;
+            _nextViewController = self.prevViewController;
+            _currentViewController = self.prevPrevViewController;
             if (index >= 1) {
                 _prevViewController = [self getViewControllerFromModel:self.modelController atIndex:index - 1];
             } else {
                 _prevViewController = nil;
             }
+            if (index >= 2) {
+                _prevPrevViewController = [self getViewControllerFromModel:self.modelController atIndex:index - 2];
+            } else {
+                _prevPrevViewController = nil;
+            }
         } else {
             _currentViewController = [self getViewControllerFromModel:self.modelController atIndex:index];
+            if (self.useLargeReuse && index <= self.count - 3) {
+                _nextNextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 2];
+            } else {
+                _nextNextViewController = nil;
+            }
             if (index <= self.count - 2) {
                 _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 1];
             } else {
@@ -289,6 +373,11 @@
                 _prevViewController = [self getViewControllerFromModel:self.modelController atIndex:index - 1];
             } else {
                 _prevViewController = nil;
+            }
+            if (self.useLargeReuse && index >= 2) {
+                _prevPrevViewController = [self getViewControllerFromModel:self.modelController atIndex:index - 2];
+            } else {
+                _prevPrevViewController = nil;
             }
         }
 
@@ -307,8 +396,11 @@
 
     // if has prev, set current offset is 1 * width; like it : prev<--current
     // otherwise, set current offset is 0; like it : current-->next
-    CGFloat offset = self.prevViewController == nil ? pageViewRect.origin.x : pageViewRect.origin.x + pageViewRect.size.width * self.index;
+//    CGFloat offset = self.prevPrevViewController != nil ?
+//            pageViewRect.origin.x + pageViewRect.size.width * (self.index + 1) :
+//            self.prevViewController != nil ? pageViewRect.origin.x + pageViewRect.size.width * self.index : pageViewRect.origin.x;
 
+    CGFloat offset = self.prevViewController != nil ? pageViewRect.origin.x + pageViewRect.size.width * self.index : pageViewRect.origin.x;
     // 3. add all view
     [self.scrollView addSubview:self.currentViewController.view];
     self.currentViewController.view.frame = CGRectMake(offset, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
@@ -319,10 +411,22 @@
         self.prevViewController.view.frame = CGRectMake(offset - pageViewRect.size.width, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
     }
 
+    // add prevPrev view
+    if (self.useLargeReuse && self.prevPrevViewController != nil) {
+        [self.scrollView insertSubview:self.prevPrevViewController.view aboveSubview:self.prevViewController.view];
+        self.prevPrevViewController.view.frame = CGRectMake(offset - pageViewRect.size.width * 2, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
+    }
+
     // add next view
     if (self.nextViewController != nil) {
         [self.scrollView insertSubview:self.nextViewController.view belowSubview:self.currentViewController.view];
         self.nextViewController.view.frame = CGRectMake(offset + pageViewRect.size.width, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
+    }
+
+    // add nextNext view
+    if (self.nextNextViewController != nil) {
+        [self.scrollView insertSubview:self.nextNextViewController.view belowSubview:self.nextViewController.view];
+        self.nextNextViewController.view.frame = CGRectMake(offset + pageViewRect.size.width * 2, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
     }
 
     // set current position.
