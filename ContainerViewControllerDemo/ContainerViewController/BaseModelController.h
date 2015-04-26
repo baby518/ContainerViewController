@@ -11,8 +11,13 @@
 
 @class BaseChildViewController;
 
-@interface BaseModelController : NSObject
-@property(nonatomic, assign) NSUInteger count;
+@interface BaseModelController : NSObject {
+@protected
+    NSUInteger count;
+}
+@property(nonatomic, strong) NSString *idInStoryBoard;
+@property(nonatomic, assign, readonly) NSUInteger count;
 
+- (instancetype)initWithId:(NSString *)idInStoryBoard;
 - (BaseChildViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard;
 @end

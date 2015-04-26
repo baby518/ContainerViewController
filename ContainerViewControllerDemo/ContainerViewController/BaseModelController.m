@@ -15,12 +15,16 @@
 
 @implementation BaseModelController
 
-- (instancetype)initWithCount:(NSUInteger)count {
+- (instancetype)initWithId:(NSString *)idInStoryBoard {
     self = [super init];
     if (self) {
-        _count = count;
+        _idInStoryBoard = idInStoryBoard;
     }
     return self;
+}
+
+- (NSUInteger)count {
+    return count;
 }
 
 - (BaseChildViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {

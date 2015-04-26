@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+NSString *const IDInStoryBoard = @"ChildViewController";
 
 @interface ViewController ()
 
@@ -18,7 +19,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
 
-    DemoModelController *modelController = [[DemoModelController alloc] init];
+    DemoModelController *modelController = [[DemoModelController alloc] initWithId:IDInStoryBoard];
     _containerViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ContainerViewController"];
 
 //    self.containerViewController.modelController = modelController;

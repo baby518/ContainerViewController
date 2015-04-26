@@ -7,7 +7,6 @@
 //
 
 #import "DemoModelController.h"
-NSString *const IDInStoryBoard = @"ChildViewController";
 
 @interface DemoModelController ()
 @property (strong, nonatomic, readonly) NSArray *dataArray;
@@ -15,21 +14,21 @@ NSString *const IDInStoryBoard = @"ChildViewController";
 
 @implementation DemoModelController
 
-- (instancetype)init {
-    self = [super init];
+- (instancetype)initWithId:(NSString *)idInStoryBoard {
+    self = [super initWithId:idInStoryBoard];
     if (self) {
         // Create the data model.
 //        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 //        _dataArray = [[dateFormatter weekdaySymbols] copy];
         _dataArray = @[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J"];
-        
-        self.count = _dataArray.count;
+
+        count = _dataArray.count;
     }
     return self;
 }
 
 - (BaseChildViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
-    return [self viewControllerAtIndex:index storyboard:storyboard childID:IDInStoryBoard];
+    return [self viewControllerAtIndex:index storyboard:storyboard childID:self.idInStoryBoard];
 }
 
 - (BaseChildViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard childID:(NSString *)idString {
