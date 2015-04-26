@@ -9,11 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@protocol ContainerParentDelegate;
 @class BaseChildViewController;
 
 @interface BaseModelController : NSObject
-@property (nonatomic, assign) id <ContainerParentDelegate> parentDelegate;
 @property(nonatomic, assign) NSUInteger count;
 
 - (BaseChildViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard;
