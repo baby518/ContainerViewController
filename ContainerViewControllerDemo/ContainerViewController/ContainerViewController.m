@@ -9,6 +9,28 @@
 #import "ContainerViewController.h"
 #import "BaseChildViewController.h"
 
+/*
+* override UIScrollView shouldRecognizeSimultaneouslyWithGestureRecognizer,
+* make UIScreenEdgePanGestureRecognizer enable.*/
+@interface UIScrollView (AllowEdgePanGesture)
+@end
+
+@implementation UIScrollView (AllowEdgePanGesture)
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]])
+            && [otherGestureRecognizer isKindOfClass:[UIScreenEdgePanGestureRecognizer class]];
+}
+
+//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+//    return YES;
+//}
+
+//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+//    return ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]])
+//            && [otherGestureRecognizer isKindOfClass:[UIScreenEdgePanGestureRecognizer class]];
+//}
+@end
+
 @interface ContainerViewController () <UIScrollViewDelegate>
 @property(nonatomic, assign) BOOL useLargeReuse;
 // use 3 view controllers,  prev<--current-->next
