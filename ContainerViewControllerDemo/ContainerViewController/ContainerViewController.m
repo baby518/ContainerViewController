@@ -296,16 +296,20 @@
         // 1. remove it
         [self.currentViewController.view removeFromSuperview];
         if (self.nextViewController != nil) {
+            [self.nextViewController removeFromParentViewController];
             [self.nextViewController.view removeFromSuperview];
         }
         if (self.prevViewController != nil) {
+            [self.prevViewController removeFromParentViewController];
             [self.prevViewController.view removeFromSuperview];
         }
         if (self.useLargeReuse) {
             if (self.nextNextViewController != nil) {
+                [self.nextNextViewController removeFromParentViewController];
                 [self.nextNextViewController.view removeFromSuperview];
             }
             if (self.prevPrevViewController != nil) {
+                [self.prevPrevViewController removeFromParentViewController];
                 [self.prevPrevViewController.view removeFromSuperview];
             }
         }
@@ -400,6 +404,23 @@
                 _prevPrevViewController = [self getViewControllerFromModel:self.modelController atIndex:index - 2];
             } else {
                 _prevPrevViewController = nil;
+            }
+        }
+
+        // 4. add them in parent's controller
+        [self addChildViewController:self.currentViewController];
+        if (self.nextViewController != nil) {
+            [self addChildViewController:self.nextViewController];
+        }
+        if (self.prevViewController != nil) {
+            [self addChildViewController:self.prevViewController];
+        }
+        if (self.useLargeReuse) {
+            if (self.nextNextViewController != nil) {
+                [self addChildViewController:self.nextNextViewController];
+            }
+            if (self.prevPrevViewController != nil) {
+                [self addChildViewController:self.prevPrevViewController];
             }
         }
 
