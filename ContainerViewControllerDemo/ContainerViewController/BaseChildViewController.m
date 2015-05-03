@@ -53,6 +53,9 @@
     }
 }
 
+- (void)viewDidBringToFront {
+
+}
 #pragma mark - Handle Gesture
 - (void)handleSwipeGesture:(UIGestureRecognizer *)gestureRecognizer {
 //    NSLog(@"handleSwipeGesture %@", gestureRecognizer.description);

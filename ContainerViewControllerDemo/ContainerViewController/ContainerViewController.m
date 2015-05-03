@@ -35,11 +35,11 @@
 @property(nonatomic, assign) BOOL useLargeReuse;
 // use 3 view controllers,  prev<--current-->next
 // if useLargeReuseCount, has 5 view controllers,  prevPrev<--prev<--current-->next-->nextNext
-@property(strong, nonatomic) UIViewController *prevPrevViewController;
-@property(strong, nonatomic) UIViewController *prevViewController;
-@property(strong, nonatomic) UIViewController *currentViewController;
-@property(strong, nonatomic) UIViewController *nextViewController;
-@property(strong, nonatomic) UIViewController *nextNextViewController;
+@property(strong, nonatomic) BaseChildViewController *prevPrevViewController;
+@property(strong, nonatomic) BaseChildViewController *prevViewController;
+@property(strong, nonatomic) BaseChildViewController *currentViewController;
+@property(strong, nonatomic) BaseChildViewController *nextViewController;
+@property(strong, nonatomic) BaseChildViewController *nextNextViewController;
 // this index is index of model's viewControllers' index.
 @property(assign, nonatomic) NSUInteger index;
 
@@ -78,7 +78,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (UIViewController *)getViewControllerFromModel:(BaseModelController *)model atIndex:(NSUInteger)index {
+- (BaseChildViewController *)getViewControllerFromModel:(BaseModelController *)model atIndex:(NSUInteger)index {
     NSLog(@"getViewControllerFromModel : %lu", index);
     BaseChildViewController *viewController = [model viewControllerAtIndex:index storyboard:self.storyboard];
     viewController.parentDelegate = self;
@@ -447,6 +447,8 @@
     // 3. add all view
     [self.scrollView addSubview:self.currentViewController.view];
     self.currentViewController.view.frame = CGRectMake(offset, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
+
+    [self.currentViewController viewDidBringToFront];
 
     // add prev view
     if (self.prevViewController != nil) {

@@ -16,4 +16,7 @@
 - (void)swipeToNextViewController;
 - (void)swipeToPrevViewController;
 - (void)gotoViewControllerAtIndex:(NSUInteger)index;
+
+/* show current view controller*/
+- (void)viewDidBringToFront;
 @end
