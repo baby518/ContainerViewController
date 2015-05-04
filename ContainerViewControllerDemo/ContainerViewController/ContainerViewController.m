@@ -52,6 +52,18 @@
     return self.index;
 }
 
+- (void)awakeFromNib {
+    [self setupScrollModel];
+    NSLog(@"ContainerViewController awakeFromNib");
+    // avoid offset
+    if ([self respondsToSelector:@selector(setAutomaticallyAdjustsScrollViewInsets:)]) {
+        self.automaticallyAdjustsScrollViewInsets = NO;
+    }
+    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    }
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -66,7 +78,7 @@
         self.scrollView.showsHorizontalScrollIndicator = NO;
         self.scrollView.directionalLockEnabled = YES;
 
-        [self.view addSubview:_scrollView];
+        [self.view addSubview:self.scrollView];
 
         // show all views
         [self relocateViewController];
@@ -477,6 +489,12 @@
     // set current position.
     [self.scrollView setContentOffset:CGPointMake(offset, pageViewRect.origin.y) animated:NO];
 }
+
+#pragma mark - ScrollView
+- (void)setupScrollModel {
+    NSLog(@"ContainerViewController setupScrollView");
+}
+
 /*
 #pragma mark - Navigation
 
