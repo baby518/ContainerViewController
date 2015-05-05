@@ -449,11 +449,8 @@
 
     CGRect pageViewRect = self.scrollView.bounds;
 
-    // if has prev, set current offset is 1 * width; like it : prev<--current
+    // if has prev, set current offset is index * width; like it : prev<--current
     // otherwise, set current offset is 0; like it : current-->next
-//    CGFloat offset = self.prevPrevViewController != nil ?
-//            pageViewRect.origin.x + pageViewRect.size.width * (self.index + 1) :
-//            self.prevViewController != nil ? pageViewRect.origin.x + pageViewRect.size.width * self.index : pageViewRect.origin.x;
 
     CGFloat offset = self.prevViewController != nil ? pageViewRect.origin.x + pageViewRect.size.width * self.index : pageViewRect.origin.x;
     // 3. add all view
