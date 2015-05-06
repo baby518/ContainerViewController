@@ -7,7 +7,6 @@
 //
 
 #import "ContainerViewController.h"
-#import "BaseChildViewController.h"
 
 /*
 * override UIScrollView shouldRecognizeSimultaneouslyWithGestureRecognizer,
@@ -35,11 +34,11 @@
 @property(nonatomic, assign) BOOL useLargeReuse;
 // use 3 view controllers,  prev<--current-->next
 // if useLargeReuseCount, has 5 view controllers,  prevPrev<--prev<--current-->next-->nextNext
-@property(strong, nonatomic) BaseChildViewController *prevPrevViewController;
-@property(strong, nonatomic) BaseChildViewController *prevViewController;
-@property(strong, nonatomic) BaseChildViewController *currentViewController;
-@property(strong, nonatomic) BaseChildViewController *nextViewController;
-@property(strong, nonatomic) BaseChildViewController *nextNextViewController;
+@property(strong, nonatomic) UIViewController *prevPrevViewController;
+@property(strong, nonatomic) UIViewController *prevViewController;
+@property(strong, nonatomic) UIViewController *currentViewController;
+@property(strong, nonatomic) UIViewController *nextViewController;
+@property(strong, nonatomic) UIViewController *nextNextViewController;
 // this index is index of model's viewControllers' index.
 @property(assign, nonatomic) NSUInteger index;
 
@@ -90,10 +89,20 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (BaseChildViewController *)getViewControllerFromModel:(BaseModelController *)model atIndex:(NSUInteger)index {
+- (UIViewController *)getViewControllerFromModel:(BaseModelController *)model atIndex:(NSUInteger)index {
     NSLog(@"getViewControllerFromModel : %lu", index);
-    BaseChildViewController *viewController = [model viewControllerAtIndex:index storyboard:self.storyboard];
-    viewController.parentDelegate = self;
+    UIViewController *viewController = [model viewControllerAtIndex:index storyboard:self.storyboard];
+
+    if (!self.useScrollView) {
+        UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeGesture:)];
+        [swipeLeft setDirection:UISwipeGestureRecognizerDirectionLeft];
+        [viewController.view addGestureRecognizer:swipeLeft];
+        
+        UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeGesture:)];
+        [swipeRight setDirection:UISwipeGestureRecognizerDirectionRight];
+        [viewController.view addGestureRecognizer:swipeRight];
+    }
+    
     return viewController;
 }
 
@@ -156,12 +165,6 @@
 
 - (void)setModelController:(BaseModelController *)modelController {
     [self setModelController:modelController startIndex:0];
-}
-
-#pragma mark - ContainerParentDelegate
-
-- (BOOL)isUseScrollView {
-    return self.useScrollView;
 }
 
 - (void)swipeToNextViewController {
@@ -457,7 +460,7 @@
     [self.scrollView addSubview:self.currentViewController.view];
     self.currentViewController.view.frame = CGRectMake(offset, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
 
-    [self.currentViewController viewDidBringToFront];
+    [self viewDidBringToFront:self.index];
 
     // add prev view
     if (self.prevViewController != nil) {
@@ -487,9 +490,24 @@
     [self.scrollView setContentOffset:CGPointMake(offset, pageViewRect.origin.y) animated:NO];
 }
 
+- (void)viewDidBringToFront:(NSUInteger)index {
+}
+
 #pragma mark - ScrollView
 - (void)setupScrollModel {
     NSLog(@"ContainerViewController setupScrollView");
+}
+
+#pragma mark - Handle Gesture
+- (void)handleSwipeGesture:(UIGestureRecognizer *)gestureRecognizer {
+    //    NSLog(@"handleSwipeGesture %@", gestureRecognizer.description);
+    if ([gestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]]) {
+        if (((UISwipeGestureRecognizer *) gestureRecognizer).direction == UISwipeGestureRecognizerDirectionRight) {
+            [self swipeToPrevViewController];
+        } else if (((UISwipeGestureRecognizer *) gestureRecognizer).direction == UISwipeGestureRecognizerDirectionLeft) {
+            [self swipeToNextViewController];
+        }
+    }
 }
 
 /*

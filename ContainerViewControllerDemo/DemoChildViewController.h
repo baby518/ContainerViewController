@@ -7,9 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BaseChildViewController.h"
 
-@interface DemoChildViewController : BaseChildViewController
+@interface DemoChildViewController : UIViewController
 @property (strong, nonatomic) IBOutlet UILabel *dataLabel;
 @property (strong, nonatomic) IBOutlet UITextField *pageNumberTextField;
 @property (strong, nonatomic) IBOutlet UIStepper *pageNumberStepper;

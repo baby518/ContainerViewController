@@ -9,8 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@class BaseChildViewController;
-
 @interface BaseModelController : NSObject {
 @protected
     NSUInteger count;
@@ -19,5 +17,5 @@
 @property(nonatomic, assign, readonly) NSUInteger count;
 
 - (instancetype)initWithId:(NSString *)idInStoryBoard;
-- (BaseChildViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard;
+- (UIViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard;
 @end

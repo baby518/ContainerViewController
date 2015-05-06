@@ -7,7 +7,6 @@
 //
 
 #import "BaseModelController.h"
-#import "BaseChildViewController.h"
 #import "ContainerViewController.h"
 
 @interface BaseModelController ()
@@ -27,10 +26,10 @@
     return count;
 }
 
-- (BaseChildViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
+- (UIViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
     // Subclasses must override this method。
     [self doesNotRecognizeSelector:@selector(viewControllerAtIndex::)];
-    return [[BaseChildViewController alloc] init];
+    return [[UIViewController alloc] init];
 }
 
 @end

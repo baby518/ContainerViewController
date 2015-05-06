@@ -10,7 +10,6 @@
 		A8E2B15539DFECEEBD8F8B81 /* BaseModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A8E2B50CD63CA2669C973489 /* BaseModelController.m */; };
 		A8E2B3EC2370BC4EEAFB32E1 /* DemoChildViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A8E2BF552480661CB4216B73 /* DemoChildViewController.m */; };
 		A8E2B95D2F580618E02F15C2 /* ContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A8E2B703594D2B801AEF090C /* ContainerViewController.m */; };
-		A8E2B98C963FA82F59CF6546 /* BaseChildViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A8E2B960C5E7049EC5AAD56B /* BaseChildViewController.m */; };
 		A8E2B9BEB939361FCA9CA0B0 /* DemoModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A8E2B85E01CE3C5EB4A3CE5D /* DemoModelController.m */; };
 		D4BCC4AC1AE68D2900440CE8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D4BCC4AB1AE68D2900440CE8 /* main.m */; };
 		D4BCC4AF1AE68D2900440CE8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D4BCC4AE1AE68D2900440CE8 /* AppDelegate.m */; };
@@ -22,14 +21,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A8E2B0E1DD15BD7CD63B7417 /* BaseChildViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseChildViewController.h; sourceTree = "<group>"; };
 		A8E2B1727FFFF47654DBBC13 /* DemoModelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoModelController.h; sourceTree = "<group>"; };
 		A8E2B34AC8D930D2B3874743 /* BaseModelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseModelController.h; sourceTree = "<group>"; };
 		A8E2B4427F9D2023CF9FCDDB /* DemoChildViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoChildViewController.h; sourceTree = "<group>"; };
 		A8E2B50CD63CA2669C973489 /* BaseModelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseModelController.m; sourceTree = "<group>"; };
 		A8E2B703594D2B801AEF090C /* ContainerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContainerViewController.m; sourceTree = "<group>"; };
 		A8E2B85E01CE3C5EB4A3CE5D /* DemoModelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoModelController.m; sourceTree = "<group>"; };
-		A8E2B960C5E7049EC5AAD56B /* BaseChildViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseChildViewController.m; sourceTree = "<group>"; };
 		A8E2BBAB0AEA9FDAB833995A /* ContainerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContainerViewController.h; sourceTree = "<group>"; };
 		A8E2BF552480661CB4216B73 /* DemoChildViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoChildViewController.m; sourceTree = "<group>"; };
 		D4BCC4A61AE68D2900440CE8 /* ContainerViewControllerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ContainerViewControllerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -63,8 +60,6 @@
 				A8E2B50CD63CA2669C973489 /* BaseModelController.m */,
 				A8E2BBAB0AEA9FDAB833995A /* ContainerViewController.h */,
 				A8E2B703594D2B801AEF090C /* ContainerViewController.m */,
-				A8E2B0E1DD15BD7CD63B7417 /* BaseChildViewController.h */,
-				A8E2B960C5E7049EC5AAD56B /* BaseChildViewController.m */,
 			);
 			path = ContainerViewController;
 			sourceTree = "<group>";
@@ -192,7 +187,6 @@
 				D4BCC4AC1AE68D2900440CE8 /* main.m in Sources */,
 				A8E2B15539DFECEEBD8F8B81 /* BaseModelController.m in Sources */,
 				A8E2B95D2F580618E02F15C2 /* ContainerViewController.m in Sources */,
-				A8E2B98C963FA82F59CF6546 /* BaseChildViewController.m in Sources */,
 				A8E2B3EC2370BC4EEAFB32E1 /* DemoChildViewController.m in Sources */,
 				A8E2B9BEB939361FCA9CA0B0 /* DemoModelController.m in Sources */,
 			);
