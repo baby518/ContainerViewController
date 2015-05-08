@@ -15,6 +15,7 @@
 
 @property(strong, nonatomic) UIScrollView *navScrollView;
 @property(strong, nonatomic) NSMutableArray *titleArray;
+@property(strong, nonatomic) NSMutableArray *labelArray;
 @property(assign, nonatomic) NSInteger count;
 @end
 
@@ -27,6 +28,7 @@
         _scrollHeight = frame.size.height;
         _scrollItemWidth = 60.0;
         _titleArray = [NSMutableArray arrayWithArray:titles];
+        _labelArray = [NSMutableArray array];
         _count = self.titleArray.count;
 
         [self setupNavScrollView];
@@ -55,26 +57,49 @@
     self.navScrollView.contentSize = CGSizeMake((self.count - 1) * self.scrollItemWidth + self.frameWidth, self.scrollHeight);
 
     for (NSInteger i = 0; i < self.count; i++) {
-        UILabel *navLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frameWidth / 2 + self.scrollItemWidth * (i - 0.5), 0.0, self.scrollItemWidth, self.scrollHeight)];
-        navLabel.backgroundColor = [UIColor whiteColor];
-        navLabel.text = (NSString *)self.titleArray[i];
-        navLabel.backgroundColor = [UIColor clearColor];
-        navLabel.textColor = [UIColor blackColor];
-        navLabel.font = [UIFont systemFontOfSize:16];
-        navLabel.textAlignment = NSTextAlignmentCenter;
-        navLabel.userInteractionEnabled = YES;
-        [self.navScrollView addSubview:navLabel];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(self.frameWidth / 2 + self.scrollItemWidth * (i - 0.5), 0.0, self.scrollItemWidth, self.scrollHeight)];
+        label.backgroundColor = [UIColor whiteColor];
+        label.text = (NSString *) self.titleArray[i];
+        label.backgroundColor = [UIColor clearColor];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.userInteractionEnabled = YES;
+        label.tag = i;
 
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tagGesture:)];
+        [self.labelArray addObject:label];
+        [self.navScrollView addSubview:label];
+
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGesture:)];
         tap.numberOfTapsRequired = 1;
-        [navLabel addGestureRecognizer:tap];
-        navLabel.tag = i;
+        [label addGestureRecognizer:tap];
     }
+
+    [self setIndex:0];
 
     // add view
     [self addSubview:self.navScrollView];
 }
 
+- (void)tapGesture:(UITapGestureRecognizer *)gesture {
+    NSUInteger index = (NSUInteger) gesture.view.tag;
+    [self setIndex:index];
+}
+
+- (void)setIndex:(NSUInteger)index {
+    if (self.index != index) {
+        // last index
+        UILabel *lastLabel = self.labelArray[self.index];
+        lastLabel.font = [UIFont systemFontOfSize:16];
+        lastLabel.textColor = [UIColor blackColor];
+        _index = index;
+        if (self.delegate != nil) {
+            [self.delegate indexChanged:self.index];
+        }
+        // current index
+        UILabel *curLabel = self.labelArray[self.index];
+        curLabel.font = [UIFont systemFontOfSize:18];
+        curLabel.textColor = [UIColor redColor];
+    }
+}
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

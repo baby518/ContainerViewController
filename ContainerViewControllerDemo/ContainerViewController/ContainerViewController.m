@@ -31,7 +31,7 @@
 //}
 @end
 
-@interface ContainerViewController () <UIScrollViewDelegate>
+@interface ContainerViewController () <UIScrollViewDelegate, UINavigationScrollDelegate>
 @property(nonatomic, assign) BOOL useLargeReuse;
 // use 3 view controllers,  prev<--current-->next
 // if useLargeReuseCount, has 5 view controllers,  prevPrev<--prev<--current-->next-->nextNext
@@ -94,6 +94,8 @@
     }
 
     _navScrollView = [[UINavigationScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frameWidth, self.navigationHeight) titleArray:self.modelController.titleArray];
+    self.navScrollView.delegate = self;
+    [self.navScrollView setIndex:self.currentIndex];
     [self.view addSubview:self.navScrollView];
 }
 
@@ -104,14 +106,7 @@
 
 #pragma mark - UIGesture Method
 
-- (void)tagGesture:(UITapGestureRecognizer *)gesture {
-    NSInteger index = gesture.view.tag;
 
-    NSLog(@"zczc tagGesture index : %d", index);
-    if (index != self.currentIndex) {
-        [self gotoViewControllerAtIndex:index];
-    }
-}
 
 - (UIViewController *)getViewControllerFromModel:(BaseModelController *)model atIndex:(NSUInteger)index {
     NSLog(@"getViewControllerFromModel : %lu", index);
@@ -519,6 +514,7 @@
 }
 
 - (void)viewDidBringToFront:(NSUInteger)index {
+    [self.navScrollView setIndex:index];
 }
 
 #pragma mark - ScrollView
@@ -537,6 +533,12 @@
         }
     }
 }
+
+#pragma mark - UINavigationScrollDelegate
+- (void)indexChanged:(NSUInteger)index {
+    [self gotoViewControllerAtIndex:index];
+}
+
 
 /*
 #pragma mark - Navigation
