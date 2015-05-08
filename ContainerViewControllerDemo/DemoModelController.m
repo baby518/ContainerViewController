@@ -17,7 +17,7 @@
     self = [super initWithId:idInStoryBoard];
     if (self) {
         // Create the data model.
-        titleArray = @[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J"];
+        titleArray = @[@"AAAAAA", @"BB", @"CCCC", @"DDDDD123456", @"ESSS", @"FFF", @"GGGGG", @"H456456", @"I123123", @"JJJKJKJKJ"];
 
         count = titleArray.count;
     }

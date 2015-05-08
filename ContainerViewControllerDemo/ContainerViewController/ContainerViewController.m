@@ -7,6 +7,7 @@
 //
 
 #import "ContainerViewController.h"
+#import "UINavigationScrollView.h"
 
 /*
 * override UIScrollView shouldRecognizeSimultaneouslyWithGestureRecognizer,
@@ -44,12 +45,11 @@
 @property(assign, nonatomic) CGFloat frameWidth;
 @property(assign, nonatomic) CGFloat frameHeight;
 @property(assign, nonatomic) CGFloat navigationHeight;
-@property(assign, nonatomic) CGFloat navigationScrollItemWidth;
 
 // root scroll view
 @property(strong, nonatomic) UIScrollView *scrollView;
 // used for navigation
-@property(strong, nonatomic) UIScrollView *navScrollView;
+@property(strong, nonatomic) UINavigationScrollView *navScrollView;
 @end
 
 @implementation ContainerViewController
@@ -75,8 +75,7 @@
     // Do any additional setup after loading the view.
     _frameWidth = self.view.frame.size.width;
     _frameHeight = self.view.frame.size.height;
-    _navigationHeight = 60.0;
-    _navigationScrollItemWidth = 60.0;
+    _navigationHeight = 40.0;
 
     if (self.useScrollView) {
         _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frameWidth, self.frameHeight)];
@@ -93,42 +92,8 @@
         // show all views
         [self relocateViewController];
     }
-    
-    [self setupNavScrollView];
-}
 
-- (UIScrollView *)navScrollView {
-    if (_navScrollView == nil) {
-        _navScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frameWidth, self.navigationHeight)];
-        _navScrollView.showsHorizontalScrollIndicator = NO;
-        _navScrollView.backgroundColor = [UIColor clearColor];
-    }
-    return _navScrollView;
-}
-
-- (void)setupNavScrollView {
-    self.navScrollView.delegate = self;
-    self.navScrollView.contentSize = CGSizeMake((self.count - 1) * self.navigationScrollItemWidth + self.frameWidth, self.navigationHeight);
-
-//    self.navigationItem.titleView = self.navScrollView;
-
-    for (NSInteger i = 0; i < self.count; i++) {
-        UILabel *navLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frameWidth / 2 + self.navigationScrollItemWidth * (i - 0.5), 0, self.navigationScrollItemWidth, self.navigationHeight)];
-        navLabel.backgroundColor = [UIColor whiteColor];
-        navLabel.text = (NSString *)self.modelController.titleArray[i];
-        navLabel.font = [UIFont systemFontOfSize:16];
-        navLabel.backgroundColor = [UIColor clearColor];
-        navLabel.textColor = [UIColor blackColor];
-        navLabel.textAlignment = NSTextAlignmentCenter;
-        navLabel.userInteractionEnabled = YES;
-        [self.navScrollView addSubview:navLabel];
-
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tagGesture:)];
-        tap.numberOfTapsRequired = 1;
-        [navLabel addGestureRecognizer:tap];
-        navLabel.tag = i;
-    }
-
+    _navScrollView = [[UINavigationScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frameWidth, self.navigationHeight) titleArray:self.modelController.titleArray];
     [self.view addSubview:self.navScrollView];
 }
 

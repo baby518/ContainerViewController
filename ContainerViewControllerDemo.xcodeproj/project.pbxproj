@@ -17,6 +17,7 @@
 		D4BCC4B81AE68D2900440CE8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D4BCC4B61AE68D2900440CE8 /* Main.storyboard */; };
 		D4BCC4BA1AE68D2900440CE8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D4BCC4B91AE68D2900440CE8 /* Images.xcassets */; };
 		D4BCC4BD1AE68D2900440CE8 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4BCC4BB1AE68D2900440CE8 /* LaunchScreen.xib */; };
+		D4DAA5311AFCF78E004E20DC /* UINavigationScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DAA5301AFCF78E004E20DC /* UINavigationScrollView.m */; };
 		D4EFB9421AFBCC3A004B8F0D /* DemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EFB9411AFBCC3A004B8F0D /* DemoViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -38,6 +39,8 @@
 		D4BCC4B71AE68D2900440CE8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D4BCC4B91AE68D2900440CE8 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D4BCC4BC1AE68D2900440CE8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		D4DAA52F1AFCF78E004E20DC /* UINavigationScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UINavigationScrollView.h; sourceTree = "<group>"; };
+		D4DAA5301AFCF78E004E20DC /* UINavigationScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UINavigationScrollView.m; sourceTree = "<group>"; };
 		D4EFB9401AFBCC3A004B8F0D /* DemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoViewController.h; sourceTree = "<group>"; };
 		D4EFB9411AFBCC3A004B8F0D /* DemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -60,6 +63,8 @@
 				A8E2B50CD63CA2669C973489 /* BaseModelController.m */,
 				A8E2BBAB0AEA9FDAB833995A /* ContainerViewController.h */,
 				A8E2B703594D2B801AEF090C /* ContainerViewController.m */,
+				D4DAA52F1AFCF78E004E20DC /* UINavigationScrollView.h */,
+				D4DAA5301AFCF78E004E20DC /* UINavigationScrollView.m */,
 			);
 			path = ContainerViewController;
 			sourceTree = "<group>";
@@ -186,6 +191,7 @@
 				D4BCC4AC1AE68D2900440CE8 /* main.m in Sources */,
 				A8E2B15539DFECEEBD8F8B81 /* BaseModelController.m in Sources */,
 				A8E2B95D2F580618E02F15C2 /* ContainerViewController.m in Sources */,
+				D4DAA5311AFCF78E004E20DC /* UINavigationScrollView.m in Sources */,
 				D4EFB9421AFBCC3A004B8F0D /* DemoViewController.m in Sources */,
 				A8E2B3EC2370BC4EEAFB32E1 /* DemoChildViewController.m in Sources */,
 				A8E2B9BEB939361FCA9CA0B0 /* DemoModelController.m in Sources */,
