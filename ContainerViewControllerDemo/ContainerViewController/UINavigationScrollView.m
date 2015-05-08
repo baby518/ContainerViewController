@@ -8,8 +8,8 @@
 
 #import "UINavigationScrollView.h"
 
-CGFloat const FontSizeUnselect = 12;
-CGFloat const FontSizeSelect = 12;
+CGFloat const FontSizeUnselect = 15;
+CGFloat const FontSizeSelect = 15;
 
 @interface UINavigationScrollView () <UIScrollViewDelegate>
 @property(assign, nonatomic) CGFloat frameWidth;
@@ -31,7 +31,7 @@ CGFloat const FontSizeSelect = 12;
     if (self) {
         _frameWidth = frame.size.width;
         _scrollHeight = frame.size.height;
-        _scrollItemWidth = 60.0;
+        _scrollItemWidth = 56.0;
         _titleArray = [NSMutableArray arrayWithArray:titles];
         _labelArray = [NSMutableArray array];
         _count = self.titleArray.count;

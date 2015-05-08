@@ -78,7 +78,7 @@ CGFloat const NavigationScrollHeight = 36.0;
     _frameHeight = self.view.frame.size.height;
 
     if (self.useScrollView) {
-        _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frameWidth, self.frameHeight)];
+        _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, NavigationScrollHeight, self.frameWidth, self.frameHeight)];
         self.scrollView.contentSize = CGSizeMake(self.frameWidth * self.count, self.frameHeight);
         self.scrollView.scrollEnabled = YES;
         self.scrollView.delegate = self;
