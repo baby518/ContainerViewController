@@ -31,6 +31,8 @@
 //}
 @end
 
+CGFloat const NavigationScrollHeight = 36.0;
+
 @interface ContainerViewController () <UIScrollViewDelegate, UINavigationScrollDelegate>
 @property(nonatomic, assign) BOOL useLargeReuse;
 // use 3 view controllers,  prev<--current-->next
@@ -44,7 +46,6 @@
 @property(assign, nonatomic) NSUInteger index;
 @property(assign, nonatomic) CGFloat frameWidth;
 @property(assign, nonatomic) CGFloat frameHeight;
-@property(assign, nonatomic) CGFloat navigationHeight;
 
 // root scroll view
 @property(strong, nonatomic) UIScrollView *scrollView;
@@ -75,7 +76,6 @@
     // Do any additional setup after loading the view.
     _frameWidth = self.view.frame.size.width;
     _frameHeight = self.view.frame.size.height;
-    _navigationHeight = 40.0;
 
     if (self.useScrollView) {
         _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frameWidth, self.frameHeight)];
@@ -93,7 +93,7 @@
         [self relocateViewController];
     }
 
-    _navScrollView = [[UINavigationScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frameWidth, self.navigationHeight) titleArray:self.modelController.titleArray];
+    _navScrollView = [[UINavigationScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frameWidth, NavigationScrollHeight) titleArray:self.modelController.titleArray];
     self.navScrollView.delegate = self;
     [self.navScrollView setIndex:self.currentIndex];
     [self.view addSubview:self.navScrollView];
@@ -103,10 +103,6 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-#pragma mark - UIGesture Method
-
-
 
 - (UIViewController *)getViewControllerFromModel:(BaseModelController *)model atIndex:(NSUInteger)index {
     NSLog(@"getViewControllerFromModel : %lu", index);

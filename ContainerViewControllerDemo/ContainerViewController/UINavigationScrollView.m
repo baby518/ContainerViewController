@@ -30,6 +30,7 @@
         _titleArray = [NSMutableArray arrayWithArray:titles];
         _labelArray = [NSMutableArray array];
         _count = self.titleArray.count;
+        _index = NSUIntegerMax;
 
         [self setupNavScrollView];
     }
@@ -54,10 +55,12 @@
 
 - (void)setupNavScrollView {
     self.navScrollView.delegate = self;
-    self.navScrollView.contentSize = CGSizeMake((self.count - 1) * self.scrollItemWidth + self.frameWidth, self.scrollHeight);
+    CGFloat scrollWith = MAX(self.frameWidth, (self.count - 1) * self.scrollItemWidth);
+
+    self.navScrollView.contentSize = CGSizeMake(scrollWith, self.scrollHeight);
 
     for (NSInteger i = 0; i < self.count; i++) {
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(self.frameWidth / 2 + self.scrollItemWidth * (i - 0.5), 0.0, self.scrollItemWidth, self.scrollHeight)];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(self.scrollItemWidth * i, 0.0, self.scrollItemWidth, self.scrollHeight)];
         label.backgroundColor = [UIColor whiteColor];
         label.text = (NSString *) self.titleArray[i];
         label.backgroundColor = [UIColor clearColor];
@@ -68,15 +71,20 @@
         [self.labelArray addObject:label];
         [self.navScrollView addSubview:label];
 
+        CGRect pageViewRect = self.navScrollView.bounds;
+        CGFloat offset = pageViewRect.origin.x;
+        [self.navScrollView setContentOffset:CGPointMake(offset, pageViewRect.origin.y) animated:NO];
+
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGesture:)];
         tap.numberOfTapsRequired = 1;
         [label addGestureRecognizer:tap];
     }
 
-    [self setIndex:0];
-
-    // add view
-    [self addSubview:self.navScrollView];
+    if (self.count > 0) {
+        [self setIndex:0];
+        // add view
+        [self addSubview:self.navScrollView];
+    }
 }
 
 - (void)tapGesture:(UITapGestureRecognizer *)gesture {
@@ -85,11 +93,16 @@
 }
 
 - (void)setIndex:(NSUInteger)index {
+    if (self.count == 0 || index > self.count - 1 || index < 0) {
+        return;
+    }
     if (self.index != index) {
-        // last index
-        UILabel *lastLabel = self.labelArray[self.index];
-        lastLabel.font = [UIFont systemFontOfSize:16];
-        lastLabel.textColor = [UIColor blackColor];
+        if (self.index <= self.count - 1 && self.index >= 0) {
+            // last index
+            UILabel *lastLabel = self.labelArray[self.index];
+            lastLabel.font = [UIFont systemFontOfSize:16];
+            lastLabel.textColor = [UIColor blackColor];
+        }
         _index = index;
         if (self.delegate != nil) {
             [self.delegate indexChanged:self.index];
