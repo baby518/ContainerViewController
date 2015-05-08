@@ -8,6 +8,9 @@
 
 #import "UINavigationScrollView.h"
 
+CGFloat const FontSizeUnselect = 12;
+CGFloat const FontSizeSelect = 12;
+
 @interface UINavigationScrollView () <UIScrollViewDelegate>
 @property(assign, nonatomic) CGFloat frameWidth;
 @property(assign, nonatomic) CGFloat scrollItemWidth;
@@ -17,6 +20,8 @@
 @property(strong, nonatomic) NSMutableArray *titleArray;
 @property(strong, nonatomic) NSMutableArray *labelArray;
 @property(assign, nonatomic) NSInteger count;
+@property(strong, nonatomic) UIColor *FontColorUnselect;
+@property(strong, nonatomic) UIColor *FontColorSelect;
 @end
 
 @implementation UINavigationScrollView
@@ -32,6 +37,8 @@
         _count = self.titleArray.count;
         _index = NSUIntegerMax;
 
+        _FontColorUnselect = [UIColor blackColor];
+        _FontColorSelect = [UIColor redColor];
         [self setupNavScrollView];
     }
     return self;
@@ -69,9 +76,12 @@
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(self.scrollItemWidth * i, 0.0, self.scrollItemWidth, self.scrollHeight)];
         label.backgroundColor = [UIColor whiteColor];
         label.text = (NSString *) self.titleArray[i];
+        label.font = [UIFont systemFontOfSize:FontSizeUnselect];
+        label.textColor = self.FontColorUnselect;
         label.backgroundColor = [UIColor clearColor];
         label.textAlignment = NSTextAlignmentCenter;
         label.userInteractionEnabled = YES;
+        label.adjustsFontSizeToFitWidth = YES;
         label.tag = i;
 
         [self.labelArray addObject:label];
@@ -106,8 +116,8 @@
         if (self.index <= self.count - 1 && self.index >= 0) {
             // last index
             UILabel *lastLabel = self.labelArray[self.index];
-            lastLabel.font = [UIFont systemFontOfSize:16];
-            lastLabel.textColor = [UIColor blackColor];
+            lastLabel.font = [UIFont systemFontOfSize:FontSizeUnselect];
+            lastLabel.textColor = self.FontColorUnselect;
         }
         _index = index;
         if (self.delegate != nil) {
@@ -115,8 +125,8 @@
         }
         // current index
         UILabel *curLabel = self.labelArray[self.index];
-        curLabel.font = [UIFont systemFontOfSize:18];
-        curLabel.textColor = [UIColor redColor];
+        curLabel.font = [UIFont systemFontOfSize:FontSizeSelect];
+        curLabel.textColor = self.FontColorSelect;
     }
 }
 /*
