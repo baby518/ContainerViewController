@@ -30,6 +30,7 @@ NSString *const IDInStoryBoard = @"ChildViewController";
     [super viewDidLoad];
     NSLog(@"viewDidLoad");
     // Do any additional setup after loading the view.
+    self.barTintColor = [UIColor lightGrayColor];
 }
 
 - (void)didReceiveMemoryWarning {

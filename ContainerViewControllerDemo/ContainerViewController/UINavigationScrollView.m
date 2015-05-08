@@ -48,9 +48,15 @@
         _navScrollView.bounces = NO;
         _navScrollView.showsHorizontalScrollIndicator = NO;
         _navScrollView.directionalLockEnabled = YES;
-        _navScrollView.backgroundColor = [UIColor lightGrayColor];
     }
     return _navScrollView;
+}
+
+- (void)setBarTintColor:(UIColor *)color {
+    _barTintColor = color;
+    if (self.navScrollView != nil) {
+        self.navScrollView.backgroundColor = self.barTintColor;
+    }
 }
 
 - (void)setupNavScrollView {

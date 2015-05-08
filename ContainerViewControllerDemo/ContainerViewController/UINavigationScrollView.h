@@ -16,6 +16,7 @@
 @property(assign, nonatomic) NSUInteger index;
 @property(strong, nonatomic, readonly) UIScrollView *scrollView;
 @property(assign, nonatomic) id <UINavigationScrollDelegate> delegate;
+@property(nonatomic, strong) UIColor *barTintColor;
 
 - (instancetype)initWithFrame:(CGRect)frame titleArray:(NSArray *)titles;
 @end

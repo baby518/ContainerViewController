@@ -97,11 +97,30 @@ CGFloat const NavigationScrollHeight = 36.0;
     self.navScrollView.delegate = self;
     [self.navScrollView setIndex:self.currentIndex];
     [self.view addSubview:self.navScrollView];
+
+    // set default
+    self.barTintColor = [UIColor whiteColor];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)setBarTintColor:(UIColor *)barTintColor {
+    _barTintColor = barTintColor;
+    // I want navigationBar and navScrollView keep a same color.
+//    self.navigationController.navigationBar.translucent = NO;
+//    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+//        // Load resources for iOS 6.1 or earlier
+//        self.navigationController.navigationBar.tintColor = self.barTintColor;
+//    } else {
+//        // Load resources for iOS 7 or later
+//        self.navigationController.navigationBar.barTintColor = self.barTintColor;
+//    }
+    if (self.navScrollView != nil) {
+        [self.navScrollView setBarTintColor:self.barTintColor];
+    }
 }
 
 - (UIViewController *)getViewControllerFromModel:(BaseModelController *)model atIndex:(NSUInteger)index {
