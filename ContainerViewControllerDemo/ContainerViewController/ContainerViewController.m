@@ -41,8 +41,15 @@
 @property(strong, nonatomic) UIViewController *nextNextViewController;
 // this index is index of model's viewControllers' index.
 @property(assign, nonatomic) NSUInteger index;
+@property(assign, nonatomic) CGFloat frameWidth;
+@property(assign, nonatomic) CGFloat frameHeight;
+@property(assign, nonatomic) CGFloat navigationHeight;
+@property(assign, nonatomic) CGFloat navigationScrollItemWidth;
 
+// root scroll view
 @property(strong, nonatomic) UIScrollView *scrollView;
+// used for navigation
+@property(strong, nonatomic) UIScrollView *navScrollView;
 @end
 
 @implementation ContainerViewController
@@ -66,10 +73,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    _frameWidth = self.view.frame.size.width;
+    _frameHeight = self.view.frame.size.height;
+    _navigationHeight = 60.0;
+    _navigationScrollItemWidth = 60.0;
 
     if (self.useScrollView) {
-        _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, self.view.frame.size.height)];
-        self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width * self.count, self.view.frame.size.height);
+        _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frameWidth, self.frameHeight)];
+        self.scrollView.contentSize = CGSizeMake(self.frameWidth * self.count, self.frameHeight);
         self.scrollView.scrollEnabled = YES;
         self.scrollView.delegate = self;
         self.scrollView.bounces = NO;
@@ -82,11 +93,59 @@
         // show all views
         [self relocateViewController];
     }
+    
+    [self setupNavScrollView];
+}
+
+- (UIScrollView *)navScrollView {
+    if (_navScrollView == nil) {
+        _navScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frameWidth, self.navigationHeight)];
+        _navScrollView.showsHorizontalScrollIndicator = NO;
+        _navScrollView.backgroundColor = [UIColor clearColor];
+    }
+    return _navScrollView;
+}
+
+- (void)setupNavScrollView {
+    self.navScrollView.delegate = self;
+    self.navScrollView.contentSize = CGSizeMake((self.count - 1) * self.navigationScrollItemWidth + self.frameWidth, self.navigationHeight);
+
+//    self.navigationItem.titleView = self.navScrollView;
+
+    for (NSInteger i = 0; i < self.count; i++) {
+        UILabel *navLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frameWidth / 2 + self.navigationScrollItemWidth * (i - 0.5), 0, self.navigationScrollItemWidth, self.navigationHeight)];
+        navLabel.backgroundColor = [UIColor whiteColor];
+        navLabel.text = (NSString *)self.modelController.titleArray[i];
+        navLabel.font = [UIFont systemFontOfSize:16];
+        navLabel.backgroundColor = [UIColor clearColor];
+        navLabel.textColor = [UIColor blackColor];
+        navLabel.textAlignment = NSTextAlignmentCenter;
+        navLabel.userInteractionEnabled = YES;
+        [self.navScrollView addSubview:navLabel];
+
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tagGesture:)];
+        tap.numberOfTapsRequired = 1;
+        [navLabel addGestureRecognizer:tap];
+        navLabel.tag = i;
+    }
+
+    [self.view addSubview:self.navScrollView];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - UIGesture Method
+
+- (void)tagGesture:(UITapGestureRecognizer *)gesture {
+    NSInteger index = gesture.view.tag;
+
+    NSLog(@"zczc tagGesture index : %d", index);
+    if (index != self.currentIndex) {
+        [self gotoViewControllerAtIndex:index];
+    }
 }
 
 - (UIViewController *)getViewControllerFromModel:(BaseModelController *)model atIndex:(NSUInteger)index {
@@ -284,16 +343,20 @@
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    if (!self.useScrollView) return;
-    NSUInteger scrollIndex = (NSUInteger) (fabs(scrollView.contentOffset.x) / scrollView.frame.size.width);
-    NSLog(@"scrollViewDidEndDecelerating %lu --> %lu", self.index, scrollIndex);
-
-    if (scrollIndex > self.index) {
-        // to right
-        [self scrollToViewControllerAtIndex:scrollIndex];
-    } else if (scrollIndex < self.index) {
-        // to left
-        [self scrollToViewControllerAtIndex:scrollIndex];
+    if (scrollView == self.scrollView) {
+        if (!self.useScrollView) return;
+        NSUInteger scrollIndex = (NSUInteger) (fabs(scrollView.contentOffset.x) / scrollView.frame.size.width);
+        NSLog(@"scrollViewDidEndDecelerating %lu --> %lu", self.index, scrollIndex);
+        
+        if (scrollIndex > self.index) {
+            // to right
+            [self scrollToViewControllerAtIndex:scrollIndex];
+        } else if (scrollIndex < self.index) {
+            // to left
+            [self scrollToViewControllerAtIndex:scrollIndex];
+        }
+    } else if (scrollView == self.navScrollView) {
+        
     }
 }
 

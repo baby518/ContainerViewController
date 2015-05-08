@@ -14,10 +14,10 @@
 		D4BCC4AC1AE68D2900440CE8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D4BCC4AB1AE68D2900440CE8 /* main.m */; };
 		D4BCC4AF1AE68D2900440CE8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D4BCC4AE1AE68D2900440CE8 /* AppDelegate.m */; };
 		D4BCC4B21AE68D2900440CE8 /* ContainerViewControllerDemo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D4BCC4B01AE68D2900440CE8 /* ContainerViewControllerDemo.xcdatamodeld */; };
-		D4BCC4B51AE68D2900440CE8 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4BCC4B41AE68D2900440CE8 /* ViewController.m */; };
 		D4BCC4B81AE68D2900440CE8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D4BCC4B61AE68D2900440CE8 /* Main.storyboard */; };
 		D4BCC4BA1AE68D2900440CE8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D4BCC4B91AE68D2900440CE8 /* Images.xcassets */; };
 		D4BCC4BD1AE68D2900440CE8 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4BCC4BB1AE68D2900440CE8 /* LaunchScreen.xib */; };
+		D4EFB9421AFBCC3A004B8F0D /* DemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EFB9411AFBCC3A004B8F0D /* DemoViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,11 +35,11 @@
 		D4BCC4AD1AE68D2900440CE8 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		D4BCC4AE1AE68D2900440CE8 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		D4BCC4B11AE68D2900440CE8 /* ContainerViewControllerDemo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ContainerViewControllerDemo.xcdatamodel; sourceTree = "<group>"; };
-		D4BCC4B31AE68D2900440CE8 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		D4BCC4B41AE68D2900440CE8 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		D4BCC4B71AE68D2900440CE8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D4BCC4B91AE68D2900440CE8 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D4BCC4BC1AE68D2900440CE8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		D4EFB9401AFBCC3A004B8F0D /* DemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoViewController.h; sourceTree = "<group>"; };
+		D4EFB9411AFBCC3A004B8F0D /* DemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,8 +85,6 @@
 			children = (
 				D4BCC4AD1AE68D2900440CE8 /* AppDelegate.h */,
 				D4BCC4AE1AE68D2900440CE8 /* AppDelegate.m */,
-				D4BCC4B31AE68D2900440CE8 /* ViewController.h */,
-				D4BCC4B41AE68D2900440CE8 /* ViewController.m */,
 				D4BCC4B61AE68D2900440CE8 /* Main.storyboard */,
 				D4BCC4B91AE68D2900440CE8 /* Images.xcassets */,
 				D4BCC4BB1AE68D2900440CE8 /* LaunchScreen.xib */,
@@ -97,6 +95,8 @@
 				A8E2BF552480661CB4216B73 /* DemoChildViewController.m */,
 				A8E2B1727FFFF47654DBBC13 /* DemoModelController.h */,
 				A8E2B85E01CE3C5EB4A3CE5D /* DemoModelController.m */,
+				D4EFB9401AFBCC3A004B8F0D /* DemoViewController.h */,
+				D4EFB9411AFBCC3A004B8F0D /* DemoViewController.m */,
 			);
 			path = ContainerViewControllerDemo;
 			sourceTree = "<group>";
@@ -183,10 +183,10 @@
 			files = (
 				D4BCC4B21AE68D2900440CE8 /* ContainerViewControllerDemo.xcdatamodeld in Sources */,
 				D4BCC4AF1AE68D2900440CE8 /* AppDelegate.m in Sources */,
-				D4BCC4B51AE68D2900440CE8 /* ViewController.m in Sources */,
 				D4BCC4AC1AE68D2900440CE8 /* main.m in Sources */,
 				A8E2B15539DFECEEBD8F8B81 /* BaseModelController.m in Sources */,
 				A8E2B95D2F580618E02F15C2 /* ContainerViewController.m in Sources */,
+				D4EFB9421AFBCC3A004B8F0D /* DemoViewController.m in Sources */,
 				A8E2B3EC2370BC4EEAFB32E1 /* DemoChildViewController.m in Sources */,
 				A8E2B9BEB939361FCA9CA0B0 /* DemoModelController.m in Sources */,
 			);

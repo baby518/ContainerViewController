@@ -15,6 +15,7 @@
 @property(nonatomic, assign, readonly) NSUInteger currentIndex;
 @property(strong, nonatomic) BaseModelController *modelController;
 
+/* doit in awakeFromNib which is before viewDidLoad.*/
 - (void)setupScrollModel;
 - (void)setModelController:(BaseModelController *)modelController;
 - (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index;

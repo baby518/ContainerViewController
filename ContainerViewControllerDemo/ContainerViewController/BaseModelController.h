@@ -12,9 +12,11 @@
 @interface BaseModelController : NSObject {
 @protected
     NSUInteger count;
+    NSArray *titleArray;
 }
 @property(nonatomic, strong) NSString *idInStoryBoard;
 @property(nonatomic, assign, readonly) NSUInteger count;
+@property(nonatomic, assign, readonly) NSArray *titleArray;
 
 - (instancetype)initWithId:(NSString *)idInStoryBoard;
 - (UIViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard;

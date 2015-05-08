@@ -9,7 +9,6 @@
 #import "DemoModelController.h"
 
 @interface DemoModelController ()
-@property (strong, nonatomic, readonly) NSArray *dataArray;
 @end
 
 @implementation DemoModelController
@@ -18,11 +17,9 @@
     self = [super initWithId:idInStoryBoard];
     if (self) {
         // Create the data model.
-//        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-//        _dataArray = [[dateFormatter weekdaySymbols] copy];
-        _dataArray = @[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J"];
+        titleArray = @[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J"];
 
-        count = _dataArray.count;
+        count = titleArray.count;
     }
     return self;
 }
@@ -33,13 +30,13 @@
 
 - (UIViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard childID:(NSString *)idString {
     // Return the data view controller for the given index.
-    if (([self.dataArray count] == 0) || (index >= [self.dataArray count])) {
+    if ((self.count == 0) || (index >= self.count)) {
         return nil;
     }
     
     // Create a new view controller and pass suitable data.
     DemoChildViewController *childViewController = [storyboard instantiateViewControllerWithIdentifier:idString];
-    childViewController.data = self.dataArray[index];
+    childViewController.data = self.titleArray[index];
     childViewController.pageNumber = index + 1;
     childViewController.pageCount = self.count;
 

@@ -26,6 +26,10 @@
     return count;
 }
 
+- (NSArray *)titleArray {
+    return titleArray;
+}
+
 - (UIViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
     // Subclasses must override this method。
     [self doesNotRecognizeSelector:@selector(viewControllerAtIndex::)];
