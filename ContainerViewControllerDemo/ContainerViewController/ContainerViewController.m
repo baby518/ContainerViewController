@@ -190,7 +190,7 @@ CGFloat const NavigationScrollHeight = 36.0;
 }
 
 - (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index useScrollView:(BOOL)useScrollView {
-    [self setModelController:modelController startIndex:index useScrollView:false useLargeReuse:false];
+    [self setModelController:modelController startIndex:index useScrollView:useScrollView useLargeReuse:false];
 }
 
 - (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index {

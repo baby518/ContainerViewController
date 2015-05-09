@@ -39,7 +39,10 @@ CGFloat const FontSizeSelect = 15;
 
         _FontColorUnselect = [UIColor blackColor];
         _FontColorSelect = [UIColor redColor];
-        [self setupNavScrollView];
+
+        if (self.count > 0) {
+            [self setupNavScrollView];
+        }
     }
     return self;
 }
@@ -68,7 +71,7 @@ CGFloat const FontSizeSelect = 15;
 
 - (void)setupNavScrollView {
     self.navScrollView.delegate = self;
-    CGFloat scrollWith = MAX(self.frameWidth, (self.count - 1) * self.scrollItemWidth);
+    CGFloat scrollWith = MAX(self.frameWidth, self.count * self.scrollItemWidth);
 
     self.navScrollView.contentSize = CGSizeMake(scrollWith, self.scrollHeight);
 
