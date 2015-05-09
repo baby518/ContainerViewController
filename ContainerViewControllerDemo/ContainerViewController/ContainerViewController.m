@@ -31,6 +31,7 @@
 //}
 @end
 
+CGFloat const SystemStatusBarHeight = 20.0;
 CGFloat const NavigationScrollHeight = 36.0;
 
 @interface ContainerViewController () <UIScrollViewDelegate, UINavigationScrollDelegate>
@@ -46,6 +47,7 @@ CGFloat const NavigationScrollHeight = 36.0;
 @property(assign, nonatomic) NSUInteger index;
 @property(assign, nonatomic) CGFloat frameWidth;
 @property(assign, nonatomic) CGFloat frameHeight;
+@property(assign, nonatomic) CGFloat SystemNavigationBarHeight;
 
 // root scroll view
 @property(strong, nonatomic) UIScrollView *scrollView;
@@ -54,10 +56,6 @@ CGFloat const NavigationScrollHeight = 36.0;
 @end
 
 @implementation ContainerViewController
-
-- (NSUInteger)currentIndex {
-    return self.index;
-}
 
 - (void)awakeFromNib {
     [self setupScrollModel];
@@ -74,12 +72,10 @@ CGFloat const NavigationScrollHeight = 36.0;
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    _frameWidth = self.view.frame.size.width;
-    _frameHeight = self.view.frame.size.height;
-
+    CGFloat startY = self.navigationController.isNavigationBarHidden ? SystemStatusBarHeight : 0.0f;
     if (self.useScrollView) {
-        _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, NavigationScrollHeight, self.frameWidth, self.frameHeight)];
-        self.scrollView.contentSize = CGSizeMake(self.frameWidth * self.count, self.frameHeight);
+        _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, startY + NavigationScrollHeight, self.frameWidth, self.frameHeight - NavigationScrollHeight)];
+        self.scrollView.contentSize = CGSizeMake(self.frameWidth * self.count, self.frameHeight - NavigationScrollHeight);
         self.scrollView.scrollEnabled = YES;
         self.scrollView.delegate = self;
         self.scrollView.bounces = NO;
@@ -93,10 +89,12 @@ CGFloat const NavigationScrollHeight = 36.0;
         [self relocateViewController];
     }
 
-    _navScrollView = [[UINavigationScrollView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frameWidth, NavigationScrollHeight) titleArray:self.modelController.titleArray];
-    self.navScrollView.delegate = self;
-    [self.navScrollView setIndex:self.currentIndex];
-    [self.view addSubview:self.navScrollView];
+    if (self.count > 0) {
+        _navScrollView = [[UINavigationScrollView alloc] initWithFrame:CGRectMake(0.0, startY, self.frameWidth, NavigationScrollHeight) titleArray:self.modelController.titleArray];
+        self.navScrollView.delegate = self;
+        [self.navScrollView setIndex:self.currentIndex];
+        [self.view addSubview:self.navScrollView];
+    }
 
     // set default
     self.barTintColor = [UIColor whiteColor];
@@ -105,6 +103,26 @@ CGFloat const NavigationScrollHeight = 36.0;
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (NSUInteger)currentIndex {
+    return self.index;
+}
+
+- (CGFloat)frameWidth {
+    return self.view.frame.size.width;
+}
+
+- (CGFloat)frameHeight {
+    return self.view.frame.size.height - self.SystemNavigationBarHeight - SystemStatusBarHeight;
+}
+
+- (CGFloat)SystemNavigationBarHeight {
+    if (self.navigationController.isNavigationBarHidden) {
+        return 0.0;
+    } else {
+        return self.navigationController.navigationBar.frame.size.height;
+    }
 }
 
 - (void)setBarTintColor:(UIColor *)barTintColor {
@@ -330,8 +348,6 @@ CGFloat const NavigationScrollHeight = 36.0;
             // to left
             [self scrollToViewControllerAtIndex:scrollIndex];
         }
-    } else if (scrollView == self.navScrollView) {
-        
     }
 }
 
@@ -529,7 +545,9 @@ CGFloat const NavigationScrollHeight = 36.0;
 }
 
 - (void)viewDidBringToFront:(NSUInteger)index {
-    [self.navScrollView setIndex:index];
+    if (self.navScrollView != nil) {
+        [self.navScrollView setIndex:index];
+    }
 }
 
 #pragma mark - ScrollView
