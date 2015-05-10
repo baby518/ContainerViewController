@@ -32,7 +32,7 @@
 @end
 
 CGFloat const SystemStatusBarHeight = 20.0;
-CGFloat const NavigationScrollHeight = 36.0;
+CGFloat const NavigationScrollHeight = 32.0;
 
 @interface ContainerViewController () <UIScrollViewDelegate, UINavigationScrollDelegate>
 @property(nonatomic, assign) BOOL useLargeReuse;
@@ -92,7 +92,7 @@ CGFloat const NavigationScrollHeight = 36.0;
     if (self.count > 0) {
         _navScrollView = [[UINavigationScrollView alloc] initWithFrame:CGRectMake(0.0, startY, self.frameWidth, NavigationScrollHeight) titleArray:self.modelController.titleArray];
         self.navScrollView.delegate = self;
-        [self.navScrollView setIndex:self.currentIndex];
+        self.navScrollView.index = self.currentIndex;
         [self.view addSubview:self.navScrollView];
     }
 

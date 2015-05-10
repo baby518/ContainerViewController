@@ -8,8 +8,10 @@
 
 #import "UINavigationScrollView.h"
 
-CGFloat const FontSizeUnselect = 15;
-CGFloat const FontSizeSelect = 15;
+CGFloat const FontSizeUnselect = 16;
+CGFloat const FontSizeSelect = 16;
+CGFloat const ScrollItemMinWidth = 56.0;
+CGFloat const ScrollItemMargin = 8.0;
 
 @interface UINavigationScrollView () <UIScrollViewDelegate>
 @property(assign, nonatomic) CGFloat frameWidth;
@@ -18,10 +20,9 @@ CGFloat const FontSizeSelect = 15;
 
 @property(strong, nonatomic) UIScrollView *navScrollView;
 @property(strong, nonatomic) NSMutableArray *titleArray;
-@property(strong, nonatomic) NSMutableArray *labelArray;
 @property(assign, nonatomic) NSInteger count;
-@property(strong, nonatomic) UIColor *FontColorUnselect;
-@property(strong, nonatomic) UIColor *FontColorSelect;
+@property(strong, nonatomic) UIColor *fontColorUnselect;
+@property(strong, nonatomic) UIColor *fontColorSelect;
 @end
 
 @implementation UINavigationScrollView
@@ -31,14 +32,12 @@ CGFloat const FontSizeSelect = 15;
     if (self) {
         _frameWidth = frame.size.width;
         _scrollHeight = frame.size.height;
-        _scrollItemWidth = 56.0;
         _titleArray = [NSMutableArray arrayWithArray:titles];
-        _labelArray = [NSMutableArray array];
         _count = self.titleArray.count;
         _index = NSUIntegerMax;
 
-        _FontColorUnselect = [UIColor blackColor];
-        _FontColorSelect = [UIColor redColor];
+        _fontColorUnselect = [UIColor blackColor];
+        _fontColorSelect = [UIColor redColor];
 
         if (self.count > 0) {
             [self setupNavScrollView];
@@ -71,43 +70,46 @@ CGFloat const FontSizeSelect = 15;
 
 - (void)setupNavScrollView {
     self.navScrollView.delegate = self;
-    CGFloat scrollWith = MAX(self.frameWidth, self.count * self.scrollItemWidth);
 
-    self.navScrollView.contentSize = CGSizeMake(scrollWith, self.scrollHeight);
-
+    CGFloat scrollWidth = 0.0f;
     for (NSInteger i = 0; i < self.count; i++) {
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(self.scrollItemWidth * i, 0.0, self.scrollItemWidth, self.scrollHeight)];
-        label.backgroundColor = [UIColor whiteColor];
-        label.text = (NSString *) self.titleArray[i];
-        label.font = [UIFont systemFontOfSize:FontSizeUnselect];
-        label.textColor = self.FontColorUnselect;
-        label.backgroundColor = [UIColor clearColor];
-        label.textAlignment = NSTextAlignmentCenter;
-        label.userInteractionEnabled = YES;
-        label.adjustsFontSizeToFitWidth = YES;
-        label.tag = i;
+        NSString *title = (NSString *) self.titleArray[i];
+        CGFloat titleWidth = [title sizeWithFont:[UIFont systemFontOfSize:FontSizeUnselect]
+                               constrainedToSize:CGSizeMake(self.frameWidth, self.scrollHeight)
+                                   lineBreakMode:NSLineBreakByTruncatingTail].width;
+        titleWidth = MAX(titleWidth + ScrollItemMargin * 2, ScrollItemMinWidth);
 
-        [self.labelArray addObject:label];
-        [self.navScrollView addSubview:label];
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        [button setFrame:CGRectMake(scrollWidth, 0.0, titleWidth, self.scrollHeight)];
+        button.tag = i + 100;
 
-        CGRect pageViewRect = self.navScrollView.bounds;
-        CGFloat offset = pageViewRect.origin.x;
-        [self.navScrollView setContentOffset:CGPointMake(offset, pageViewRect.origin.y) animated:NO];
+        button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+        [button setTitle:title forState:UIControlStateNormal];
+        button.titleLabel.font = [UIFont systemFontOfSize:FontSizeUnselect];
+        [button setTitleColor:self.fontColorUnselect forState:UIControlStateNormal];
+        [button setTitleColor:self.fontColorSelect forState:UIControlStateSelected];
 
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGesture:)];
-        tap.numberOfTapsRequired = 1;
-        [label addGestureRecognizer:tap];
+        [button addTarget:self action:@selector(selectTitle:) forControlEvents:UIControlEventTouchUpInside];
+
+        scrollWidth = scrollWidth + titleWidth;
+
+        [self.navScrollView addSubview:button];
     }
 
+    // set real width
+    scrollWidth = MAX(self.frameWidth, scrollWidth);
+    self.navScrollView.contentSize = CGSizeMake(scrollWidth, self.scrollHeight);
+
     if (self.count > 0) {
+        // default is 0
         [self setIndex:0];
         // add view
         [self addSubview:self.navScrollView];
     }
 }
 
-- (void)tapGesture:(UITapGestureRecognizer *)gesture {
-    NSUInteger index = (NSUInteger) gesture.view.tag;
+- (void)selectTitle:(UIButton *)button {
+    NSUInteger index = (NSUInteger) button.tag - 100;
     [self setIndex:index];
 }
 
@@ -117,19 +119,33 @@ CGFloat const FontSizeSelect = 15;
     }
     if (self.index != index) {
         if (self.index <= self.count - 1 && self.index >= 0) {
-            // last index
-            UILabel *lastLabel = self.labelArray[self.index];
-            lastLabel.font = [UIFont systemFontOfSize:FontSizeUnselect];
-            lastLabel.textColor = self.FontColorUnselect;
+            UIButton *lastButton = (UIButton *) [self.navScrollView viewWithTag:self.index + 100];
+            lastButton.selected = NO;
         }
+
         _index = index;
-        if (self.delegate != nil) {
-            [self.delegate indexChanged:self.index];
+
+        UIButton *curButton = (UIButton *) [self.navScrollView viewWithTag:self.index + 100];
+        if (!curButton.selected) {
+            curButton.selected = YES;
+
+            [self adjustContentOffset:curButton];
+            if (self.delegate != nil) {
+                [self.delegate indexChanged:self.index];
+            }
         }
-        // current index
-        UILabel *curLabel = self.labelArray[self.index];
-        curLabel.font = [UIFont systemFontOfSize:FontSizeSelect];
-        curLabel.textColor = self.FontColorSelect;
+    }
+}
+
+- (void)adjustContentOffset:(UIButton *)button {
+    if (button.frame.origin.x < self.navScrollView.contentOffset.x) {
+        // over left side
+        CGFloat leftOffset = self.navScrollView.contentOffset.x - button.frame.origin.x;
+        [self.navScrollView setContentOffset:CGPointMake(self.navScrollView.contentOffset.x - leftOffset, 0) animated:YES];
+    } else if (button.frame.origin.x + button.frame.size.width > self.navScrollView.frame.size.width + self.navScrollView.contentOffset.x) {
+        // over right side
+        CGFloat rightOffset = button.frame.origin.x + button.frame.size.width - (self.navScrollView.frame.size.width + self.navScrollView.contentOffset.x);
+        [self.navScrollView setContentOffset:CGPointMake(self.navScrollView.contentOffset.x + rightOffset, 0) animated:YES];
     }
 }
 /*
