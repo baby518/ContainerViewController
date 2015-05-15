@@ -335,6 +335,19 @@ CGFloat const NavigationScrollHeight = 32.0;
 
 #pragma mark - UIScrollViewDelegate
 
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
+                     withVelocity:(CGPoint)velocity
+              targetContentOffset:(inout CGPoint *)targetContentOffset {
+    if (scrollView == self.scrollView) {
+        if (!self.useScrollView) return;
+        NSUInteger scrollIndex = (NSUInteger) (targetContentOffset->x / scrollView.frame.size.width);
+        NSLog(@"scrollViewWillEndDragging targetContentOffset %lu --> %lu", self.index, scrollIndex);
+        if (self.navScrollView != nil) {
+            [self.navScrollView highLightIndex:scrollIndex];
+        }
+    }
+}
+
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     if (scrollView == self.scrollView) {
         if (!self.useScrollView) return;

@@ -113,10 +113,11 @@ CGFloat const ScrollItemMargin = 8.0;
     [self setIndex:index];
 }
 
-- (void)setIndex:(NSUInteger)index {
+- (BOOL)highLightIndex:(NSUInteger)index {
     if (self.count == 0 || index > self.count - 1 || index < 0) {
-        return;
+        return NO;
     }
+
     if (self.index != index) {
         if (self.index <= self.count - 1 && self.index >= 0) {
             UIButton *lastButton = (UIButton *) [self.navScrollView viewWithTag:self.index + 100];
@@ -130,9 +131,16 @@ CGFloat const ScrollItemMargin = 8.0;
             curButton.selected = YES;
 
             [self adjustContentOffset:curButton];
-            if (self.delegate != nil) {
-                [self.delegate indexChanged:self.index];
-            }
+        }
+        return YES;
+    }
+    return NO;
+}
+
+- (void)setIndex:(NSUInteger)index {
+    if ([self highLightIndex:index]) {
+        if (self.delegate != nil) {
+            [self.delegate indexChanged:self.index];
         }
     }
 }

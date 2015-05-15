@@ -19,4 +19,6 @@
 @property(nonatomic, strong) UIColor *barTintColor;
 
 - (instancetype)initWithFrame:(CGRect)frame titleArray:(NSArray *)titles;
+
+- (BOOL)highLightIndex:(NSUInteger)index;
 @end
