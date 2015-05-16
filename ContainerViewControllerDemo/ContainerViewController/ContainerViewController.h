@@ -10,7 +10,6 @@
 #import "BaseModelController.h"
 
 @interface ContainerViewController : UIViewController
-@property(nonatomic, assign, readonly) BOOL useScrollView;
 @property(nonatomic, assign, readonly) NSUInteger count;
 @property(nonatomic, assign, readonly) NSUInteger currentIndex;
 @property(strong, nonatomic) BaseModelController *modelController;
@@ -20,8 +19,7 @@
 - (void)setupScrollModel;
 - (void)setModelController:(BaseModelController *)modelController;
 - (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index;
-- (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index useScrollView:(BOOL)useScrollView;
-- (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index useScrollView:(BOOL)useScrollView useLargeReuse:(BOOL)useLargeReuse;
+- (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index cacheSize:(NSUInteger)cacheSize;
 - (void)gotoViewControllerAtIndex:(NSUInteger)index;
 - (void)viewDidBringToFront:(NSUInteger)index;
 @end

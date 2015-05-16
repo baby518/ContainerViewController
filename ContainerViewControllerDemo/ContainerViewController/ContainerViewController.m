@@ -35,15 +35,11 @@ CGFloat const SystemStatusBarHeight = 20.0;
 CGFloat const NavigationScrollHeight = 32.0;
 
 @interface ContainerViewController () <UIScrollViewDelegate, UINavigationScrollDelegate>
-@property(nonatomic, assign) BOOL useLargeReuse;
-// use 3 view controllers,  prev<--current-->next
-// if useLargeReuseCount, has 5 view controllers,  prevPrev<--prev<--current-->next-->nextNext
-@property(strong, nonatomic) UIViewController *prevPrevViewController;
-@property(strong, nonatomic) UIViewController *prevViewController;
 @property(strong, nonatomic) UIViewController *currentViewController;
-@property(strong, nonatomic) UIViewController *nextViewController;
-@property(strong, nonatomic) UIViewController *nextNextViewController;
-// this index is index of model's viewControllers' index.
+@property(strong, nonatomic) NSMutableArray *viewControllerCacheStack;
+@property(strong, nonatomic) NSMutableArray *viewControllerCacheIndex;
+@property(assign, nonatomic) NSUInteger MAXCacheSize;
+// this index is index of model's viewController' index.
 @property(assign, nonatomic) NSUInteger index;
 @property(assign, nonatomic) CGFloat frameWidth;
 @property(assign, nonatomic) CGFloat frameHeight;
@@ -58,6 +54,8 @@ CGFloat const NavigationScrollHeight = 32.0;
 @implementation ContainerViewController
 
 - (void)awakeFromNib {
+    _viewControllerCacheStack = [[NSMutableArray alloc] init];
+    _viewControllerCacheIndex = [[NSMutableArray alloc] init];
     [self setupScrollModel];
     NSLog(@"ContainerViewController awakeFromNib");
     // avoid offset
@@ -72,30 +70,12 @@ CGFloat const NavigationScrollHeight = 32.0;
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    CGFloat startY = self.navigationController.isNavigationBarHidden ? SystemStatusBarHeight : 0.0f;
-    if (self.useScrollView) {
-        _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, startY + NavigationScrollHeight, self.frameWidth, self.frameHeight - NavigationScrollHeight)];
-        self.scrollView.contentSize = CGSizeMake(self.frameWidth * self.count, self.frameHeight - NavigationScrollHeight);
-        self.scrollView.scrollEnabled = YES;
-        self.scrollView.delegate = self;
-        self.scrollView.bounces = NO;
-        self.scrollView.pagingEnabled = YES;
-        self.scrollView.showsHorizontalScrollIndicator = NO;
-        self.scrollView.directionalLockEnabled = YES;
-
-        [self.view addSubview:self.scrollView];
-
-        // show all views
-        [self relocateViewController];
-    }
-
-    if (self.count > 0) {
-        _navScrollView = [[UINavigationScrollView alloc] initWithFrame:CGRectMake(0.0, startY, self.frameWidth, NavigationScrollHeight) titleArray:self.modelController.titleArray];
-        self.navScrollView.delegate = self;
-        self.navScrollView.index = self.currentIndex;
+    [self.view addSubview:self.scrollView];
+    // show all views
+    [self showScrollSubViews];
+    if (self.navScrollView != nil) {
         [self.view addSubview:self.navScrollView];
     }
-
     // set default
     self.barTintColor = [UIColor whiteColor];
 }
@@ -103,6 +83,32 @@ CGFloat const NavigationScrollHeight = 32.0;
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (UIScrollView *)scrollView {
+    if (_scrollView == nil) {
+        CGFloat startY = self.navigationController.isNavigationBarHidden ? SystemStatusBarHeight : 0.0f;
+        _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, startY + NavigationScrollHeight, self.frameWidth, self.frameHeight - NavigationScrollHeight)];
+        _scrollView.contentSize = CGSizeMake(self.frameWidth * self.count, self.frameHeight - NavigationScrollHeight);
+        _scrollView.scrollEnabled = YES;
+        _scrollView.delegate = self;
+        _scrollView.bounces = NO;
+        _scrollView.pagingEnabled = YES;
+        _scrollView.showsHorizontalScrollIndicator = NO;
+        _scrollView.directionalLockEnabled = YES;
+    }
+    return _scrollView;
+}
+
+- (UINavigationScrollView *)navScrollView {
+    if (self.count <= 0) return nil;
+    if (_navScrollView == nil) {
+        CGFloat startY = self.navigationController.isNavigationBarHidden ? SystemStatusBarHeight : 0.0f;
+        _navScrollView = [[UINavigationScrollView alloc] initWithFrame:CGRectMake(0.0, startY, self.frameWidth, NavigationScrollHeight) titleArray:self.modelController.titleArray];
+        _navScrollView.delegate = self;
+        _navScrollView.index = self.currentIndex;
+    }
+    return _navScrollView;
 }
 
 - (NSUInteger)currentIndex {
@@ -145,24 +151,14 @@ CGFloat const NavigationScrollHeight = 32.0;
     NSLog(@"getViewControllerFromModel : %lu", index);
     UIViewController *viewController = [model viewControllerAtIndex:index storyboard:self.storyboard];
 
-    if (!self.useScrollView) {
-        UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeGesture:)];
-        [swipeLeft setDirection:UISwipeGestureRecognizerDirectionLeft];
-        [viewController.view addGestureRecognizer:swipeLeft];
-        
-        UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeGesture:)];
-        [swipeRight setDirection:UISwipeGestureRecognizerDirectionRight];
-        [viewController.view addGestureRecognizer:swipeRight];
-    }
-    
     return viewController;
 }
-
-- (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index useScrollView:(BOOL)useScrollView useLargeReuse:(BOOL)useLargeReuse {
+- (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index cacheSize:(NSUInteger)cacheSize {
     _modelController = modelController;
     _count = self.modelController.count;
-    _useScrollView = useScrollView;
-    _useLargeReuse = useLargeReuse;
+    if (cacheSize <= 0) cacheSize = 1;
+    if (cacheSize > self.count) cacheSize = self.count;
+    _MAXCacheSize = cacheSize;
     NSLog(@"setModelController : %lu/%lu", index, self.count);
     if (index >= self.count - 1) {
         _index = self.count - 1;
@@ -172,164 +168,63 @@ CGFloat const NavigationScrollHeight = 32.0;
         _index = index;
     }
 
-    _currentViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index];
-    [self addChildViewController:self.currentViewController];
-
     if (self.index >= 1) {
-        _prevViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index - 1];
-        [self addChildViewController:self.prevViewController];
+        [self addViewControllerAtIndex:self.index - 1];
     }
-
-    if (self.useLargeReuse && self.index >= 2) {
-        _prevPrevViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index - 2];
-        [self addChildViewController:self.prevPrevViewController];
-    }
-
     if (self.index + 2 <= self.count) {
-        _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index + 1];
-        [self addChildViewController:self.nextViewController];
+        [self addViewControllerAtIndex:self.index + 1];
     }
-
-    if (self.useLargeReuse && self.index + 3 <= self.count) {
-        _nextNextViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index + 2];
-        [self addChildViewController:self.nextNextViewController];
-    }
-
-    if (!self.useScrollView) {
-        // show current view
-        [self.view addSubview:self.currentViewController.view];
-
-        // Set the page view controller's bounds using an inset rect so that self's view is visible around the edges of the pages.
-        CGRect pageViewRect = self.view.bounds;
-        self.currentViewController.view.frame = pageViewRect;
-
-        [self.currentViewController didMoveToParentViewController:self];
-    }
-}
-
-- (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index useScrollView:(BOOL)useScrollView {
-    [self setModelController:modelController startIndex:index useScrollView:useScrollView useLargeReuse:false];
+    [self addViewControllerAtIndex:self.index];
 }
 
 - (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index {
-    [self setModelController:modelController startIndex:index useScrollView:false];
+    [self setModelController:modelController startIndex:index cacheSize:5];
 }
 
 - (void)setModelController:(BaseModelController *)modelController {
     [self setModelController:modelController startIndex:0];
 }
 
-- (void)swipeToNextViewController {
-    if (self.useScrollView) return;
-    NSLog(@"swipeToNextViewController");
-    if (self.index >= self.count - 1) {
-        self.index = self.count - 1;
-        return;
-    }
-    if (self.nextViewController == nil) {
-        return;
-    }
-
-    [self.nextViewController.view layoutIfNeeded];
-
-    [self.currentViewController willMoveToParentViewController:nil];
-    [self addChildViewController:self.nextViewController];
-
-    __weak __block ContainerViewController *weakSelf = self;
-    [self transitionFromViewController:self.currentViewController toViewController:self.nextViewController
-                              duration:0.4f
-                               options:UIViewAnimationOptionTransitionFlipFromRight
-                            animations:nil
-                            completion:^(BOOL finished) {
-                                [weakSelf.currentViewController removeFromParentViewController];
-                                [weakSelf.nextViewController didMoveToParentViewController:weakSelf];
-
-                                weakSelf.prevViewController = weakSelf.currentViewController;
-                                weakSelf.currentViewController = weakSelf.nextViewController;
-                                weakSelf.index++;
-                                if (weakSelf.index >= weakSelf.count - 1) {
-                                    weakSelf.nextViewController = nil;
-                                } else {
-                                    weakSelf.nextViewController = [self getViewControllerFromModel:weakSelf.modelController atIndex:weakSelf.index + 1];
-                                    [weakSelf addChildViewController:weakSelf.nextViewController];
-                                }
-
-                                NSLog(@"currentViewController %lu", weakSelf.index);
-                            }];
-}
-
-- (void)swipeToPrevViewController {
-    if (self.useScrollView) return;
-    NSLog(@"swipeToPrevViewController");
-    if (self.index <= 0) {
-        self.index = 0;
-        return;
-    }
-    if (self.prevViewController == nil) {
-        return;
-    }
-
-    [self.prevViewController.view layoutIfNeeded];
-
-    [self.currentViewController willMoveToParentViewController:nil];
-    [self addChildViewController:self.prevViewController];
-
-    __weak __block ContainerViewController *weakSelf = self;
-    [self transitionFromViewController:self.currentViewController toViewController:self.prevViewController
-                              duration:0.4f
-                               options:UIViewAnimationOptionTransitionFlipFromLeft
-                            animations:nil
-                            completion:^(BOOL finished) {
-                                [weakSelf.currentViewController removeFromParentViewController];
-                                [weakSelf.prevViewController didMoveToParentViewController:weakSelf];
-
-                                weakSelf.nextViewController = weakSelf.currentViewController;
-                                weakSelf.currentViewController = weakSelf.prevViewController;
-                                weakSelf.index--;
-                                if (weakSelf.index <= 0) {
-                                    weakSelf.prevViewController = nil;
-                                } else {
-                                    weakSelf.prevViewController = [self getViewControllerFromModel:weakSelf.modelController atIndex:weakSelf.index - 1];
-                                    [weakSelf addChildViewController:weakSelf.prevViewController];
-                                }
-                                NSLog(@"currentViewController %lu", weakSelf.index);
-                            }];
-}
-
 - (void)gotoViewControllerAtIndex:(NSUInteger)index {
-    NSLog(@"gotoViewController %lu --> %lu , useScrollView : %d", self.index, index, self.useScrollView);
-    if (self.useScrollView) {
-        [self scrollToViewControllerAtIndex:index];
-    } else {
-        if (self.index != index) {
-            if (index <= 0) {
-                index = 0;
-            } else if (index + 1 >= self.count) {
-                index = self.count - 1;
-            }
+    NSLog(@"gotoViewController %lu --> %lu", self.index, index);
+    [self scrollToViewControllerAtIndex:index];
+}
 
-            [self.currentViewController willMoveToParentViewController:nil];
-            [self.currentViewController removeFromParentViewController];
+#pragma mark - used for reuse.
 
-            _currentViewController = [self getViewControllerFromModel:self.modelController atIndex:index];
-            [self.currentViewController.view layoutIfNeeded];
+- (void)addViewControllerAtIndex:(NSUInteger)index {
+    // if index is in cache, find view controller in cache.
+    BOOL isIndexCached = [self.viewControllerCacheIndex containsObject:@(index)];
+    if (isIndexCached) {
+        NSUInteger indexCached = [self.viewControllerCacheIndex indexOfObject:@(index)];
+        UIViewController *viewController = self.viewControllerCacheStack[indexCached];
 
-            [self addChildViewController:self.currentViewController];
-            [self.view addSubview:self.currentViewController.view];
-            [self.currentViewController didMoveToParentViewController:self];
-
-            // relocate prev<--cur-->next
-            _index = index;
-            NSLog(@"currentViewController %lu", self.index);
-            if (self.index + 2 <= self.count) {
-                _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index + 1];
-                [self addChildViewController:self.nextViewController];
-            }
-            if (self.index >= 1) {
-                _prevViewController = [self getViewControllerFromModel:self.modelController atIndex:self.index - 1];
-                [self addChildViewController:self.prevViewController];
-            }
+        [self.viewControllerCacheStack removeObject:viewController];
+        [self.viewControllerCacheStack addObject:viewController];
+        [self.viewControllerCacheIndex removeObject:@(index)];
+        [self.viewControllerCacheIndex addObject:@(index)];
+        if (index == self.index) {
+            _currentViewController = viewController;
         }
+    } else {
+        // index is not in cache.
+        // count is > MAX cache size, delete first object.
+        if (self.viewControllerCacheStack.count >= self.MAXCacheSize) {
+            [self.viewControllerCacheIndex removeObject:self.viewControllerCacheIndex.firstObject];
+            UIViewController *recycleViewController = self.viewControllerCacheStack.firstObject;
+            [self.viewControllerCacheStack removeObject:recycleViewController];
+
+            [recycleViewController removeFromParentViewController];
+            [recycleViewController.view removeFromSuperview];
+        }
+        // create new one
+        UIViewController *viewController = [self getViewControllerFromModel:self.modelController atIndex:index];
+        if (index == self.index) {
+            _currentViewController = viewController;
+        }
+        [self addChildViewController:viewController];
+        [self.viewControllerCacheStack addObject:viewController];
+        [self.viewControllerCacheIndex addObject:@(index)];
     }
 }
 
@@ -339,9 +234,7 @@ CGFloat const NavigationScrollHeight = 32.0;
                      withVelocity:(CGPoint)velocity
               targetContentOffset:(inout CGPoint *)targetContentOffset {
     if (scrollView == self.scrollView) {
-        if (!self.useScrollView) return;
-        NSUInteger scrollIndex = (NSUInteger) (targetContentOffset->x / scrollView.frame.size.width);
-        NSLog(@"scrollViewWillEndDragging targetContentOffset %lu --> %lu", self.index, scrollIndex);
+        NSUInteger scrollIndex = (unsigned long) (targetContentOffset->x / scrollView.frame.size.width);
         if (self.navScrollView != nil) {
             [self.navScrollView highLightIndex:scrollIndex];
         }
@@ -350,10 +243,8 @@ CGFloat const NavigationScrollHeight = 32.0;
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     if (scrollView == self.scrollView) {
-        if (!self.useScrollView) return;
-        NSUInteger scrollIndex = (NSUInteger) (fabs(scrollView.contentOffset.x) / scrollView.frame.size.width);
-        NSLog(@"scrollViewDidEndDecelerating %lu --> %lu", self.index, scrollIndex);
-        
+        NSUInteger scrollIndex = (unsigned long)(fabs(scrollView.contentOffset.x) / scrollView.frame.size.width);
+
         if (scrollIndex > self.index) {
             // to right
             [self scrollToViewControllerAtIndex:scrollIndex];
@@ -365,8 +256,6 @@ CGFloat const NavigationScrollHeight = 32.0;
 }
 
 - (void)scrollToViewControllerAtIndex:(NSUInteger)index {
-    NSLog(@"scrollToViewControllerAtIndex %lu --> %lu", self.index, index);
-
     if (self.index != index) {
         if (index <= 0) {
             index = 0;
@@ -374,187 +263,36 @@ CGFloat const NavigationScrollHeight = 32.0;
             index = self.count - 1;
         }
 
-        // get all views need
-        // 1. remove it
-        [self.currentViewController.view removeFromSuperview];
-        if (self.nextViewController != nil) {
-            [self.nextViewController removeFromParentViewController];
-            [self.nextViewController.view removeFromSuperview];
-        }
-        if (self.prevViewController != nil) {
-            [self.prevViewController removeFromParentViewController];
-            [self.prevViewController.view removeFromSuperview];
-        }
-        if (self.useLargeReuse) {
-            if (self.nextNextViewController != nil) {
-                [self.nextNextViewController removeFromParentViewController];
-                [self.nextNextViewController.view removeFromSuperview];
-            }
-            if (self.prevPrevViewController != nil) {
-                [self.prevPrevViewController removeFromParentViewController];
-                [self.prevPrevViewController.view removeFromSuperview];
-            }
-        }
-
-        // 2. create it
-        if (self.useLargeReuse && index == self.index + 2) {
-            _prevPrevViewController = self.currentViewController;
-            _prevViewController = self.nextViewController;
-            _currentViewController = self.nextNextViewController;
-            if (index + 2 <= self.count) {
-                _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 1];
-            } else {
-                _nextViewController = nil;
-            }
-            if (index + 3 <= self.count) {
-                _nextNextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 2];
-            } else {
-                _nextNextViewController = nil;
-            }
-        } else if (index == self.index + 1) {
-            if (self.useLargeReuse) {
-                _prevPrevViewController = self.prevViewController;
-            }
-            _prevViewController = self.currentViewController;
-            _currentViewController = self.nextViewController;
-            if (index + 2 <= self.count) {
-                if (self.useLargeReuse) {
-                    _nextViewController = self.nextNextViewController;
-                    if (index + 3 <= self.count) {
-                        _nextNextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 2];
-                    } else {
-                        _nextNextViewController = nil;
-                    }
-                } else {
-                    _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 1];
-                }
-            } else {
-                _nextViewController = nil;
-            }
-        } else if (index + 1 == self.index) {
-            if (self.useLargeReuse) {
-                _nextNextViewController = self.nextViewController;
-            }
-            _nextViewController = self.currentViewController;
-            _currentViewController = self.prevViewController;
-            if (index >= 1) {
-                if (self.useLargeReuse) {
-                    _prevViewController = self.prevPrevViewController;
-                    if (index >= 2) {
-                        _prevPrevViewController = [self getViewControllerFromModel:self.modelController atIndex:index - 2];
-                    } else {
-                        _prevPrevViewController = nil;
-                    }
-                } else {
-                    _prevViewController = [self getViewControllerFromModel:self.modelController atIndex:index - 1];
-                }
-            } else {
-                _prevViewController = nil;
-            }
-        } else if (self.useLargeReuse && index + 2 == self.index) {
-            _nextNextViewController = self.currentViewController;
-            _nextViewController = self.prevViewController;
-            _currentViewController = self.prevPrevViewController;
-            if (index >= 1) {
-                _prevViewController = [self getViewControllerFromModel:self.modelController atIndex:index - 1];
-            } else {
-                _prevViewController = nil;
-            }
-            if (index >= 2) {
-                _prevPrevViewController = [self getViewControllerFromModel:self.modelController atIndex:index - 2];
-            } else {
-                _prevPrevViewController = nil;
-            }
-        } else {
-            _currentViewController = [self getViewControllerFromModel:self.modelController atIndex:index];
-            if (self.useLargeReuse && index + 3 <= self.count) {
-                _nextNextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 2];
-            } else {
-                _nextNextViewController = nil;
-            }
-            if (index + 2 <= self.count) {
-                _nextViewController = [self getViewControllerFromModel:self.modelController atIndex:index + 1];
-            } else {
-                _nextViewController = nil;
-            }
-            if (index >= 1) {
-                _prevViewController = [self getViewControllerFromModel:self.modelController atIndex:index - 1];
-            } else {
-                _prevViewController = nil;
-            }
-            if (self.useLargeReuse && index >= 2) {
-                _prevPrevViewController = [self getViewControllerFromModel:self.modelController atIndex:index - 2];
-            } else {
-                _prevPrevViewController = nil;
-            }
-        }
-
-        // 4. add them in parent's controller
-        [self addChildViewController:self.currentViewController];
-        if (self.nextViewController != nil) {
-            [self addChildViewController:self.nextViewController];
-        }
-        if (self.prevViewController != nil) {
-            [self addChildViewController:self.prevViewController];
-        }
-        if (self.useLargeReuse) {
-            if (self.nextNextViewController != nil) {
-                [self addChildViewController:self.nextNextViewController];
-            }
-            if (self.prevPrevViewController != nil) {
-                [self addChildViewController:self.prevPrevViewController];
-            }
-        }
-
         self.index = index;
 
+        if (index >= 1) {
+            [self addViewControllerAtIndex:index - 1];
+        }
+        if (index + 2 <= self.count) {
+            [self addViewControllerAtIndex:index + 1];
+        }
+        [self addViewControllerAtIndex:index];
         // show all views
-        [self relocateViewController];
+        [self showScrollSubViews];
     }
 }
 
-- (void)relocateViewController {
-    // reset current position to 0,0 first.
-    [self.scrollView setContentOffset:CGPointMake(0, 0) animated:NO];
-
+- (void)showScrollSubViews {
+    NSUInteger count = self.viewControllerCacheIndex.count;
     CGRect pageViewRect = self.scrollView.bounds;
-
-    // if has prev, set current offset is index * width; like it : prev<--current
-    // otherwise, set current offset is 0; like it : current-->next
-
-    CGFloat offset = self.prevViewController != nil ? pageViewRect.origin.x + pageViewRect.size.width * self.index : pageViewRect.origin.x;
-    // 3. add all view
-    [self.scrollView addSubview:self.currentViewController.view];
-    self.currentViewController.view.frame = CGRectMake(offset, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
-
-    [self viewDidBringToFront:self.index];
-
-    // add prev view
-    if (self.prevViewController != nil) {
-        [self.scrollView insertSubview:self.prevViewController.view aboveSubview:self.currentViewController.view];
-        self.prevViewController.view.frame = CGRectMake(offset - pageViewRect.size.width, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
-    }
-
-    // add prevPrev view
-    if (self.useLargeReuse && self.prevPrevViewController != nil) {
-        [self.scrollView insertSubview:self.prevPrevViewController.view aboveSubview:self.prevViewController.view];
-        self.prevPrevViewController.view.frame = CGRectMake(offset - pageViewRect.size.width * 2, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
-    }
-
-    // add next view
-    if (self.nextViewController != nil) {
-        [self.scrollView insertSubview:self.nextViewController.view belowSubview:self.currentViewController.view];
-        self.nextViewController.view.frame = CGRectMake(offset + pageViewRect.size.width, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
-    }
-
-    // add nextNext view
-    if (self.nextNextViewController != nil) {
-        [self.scrollView insertSubview:self.nextNextViewController.view belowSubview:self.nextViewController.view];
-        self.nextNextViewController.view.frame = CGRectMake(offset + pageViewRect.size.width * 2, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
+    CGFloat startX = 0;
+    for (NSUInteger i = 0; i < count; i++) {
+        NSUInteger index = ((NSNumber *) self.viewControllerCacheIndex[i]).unsignedIntegerValue;
+        CGFloat offsetX = startX + pageViewRect.size.width * index;
+        UIViewController *viewController = self.viewControllerCacheStack[i];
+        viewController.view.frame = CGRectMake(offsetX, pageViewRect.origin.y, pageViewRect.size.width, pageViewRect.size.height);
+        [self.scrollView addSubview:viewController.view];
     }
 
     // set current position.
-    [self.scrollView setContentOffset:CGPointMake(offset, pageViewRect.origin.y) animated:NO];
+    CGFloat offsetX = startX + pageViewRect.size.width * self.index;
+    [self.scrollView setContentOffset:CGPointMake(offsetX, pageViewRect.origin.y) animated:NO];
+    [self viewDidBringToFront:self.index];
 }
 
 - (void)viewDidBringToFront:(NSUInteger)index {
@@ -566,18 +304,6 @@ CGFloat const NavigationScrollHeight = 32.0;
 #pragma mark - ScrollView
 - (void)setupScrollModel {
     NSLog(@"ContainerViewController setupScrollView");
-}
-
-#pragma mark - Handle Gesture
-- (void)handleSwipeGesture:(UIGestureRecognizer *)gestureRecognizer {
-    //    NSLog(@"handleSwipeGesture %@", gestureRecognizer.description);
-    if ([gestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]]) {
-        if (((UISwipeGestureRecognizer *) gestureRecognizer).direction == UISwipeGestureRecognizerDirectionRight) {
-            [self swipeToPrevViewController];
-        } else if (((UISwipeGestureRecognizer *) gestureRecognizer).direction == UISwipeGestureRecognizerDirectionLeft) {
-            [self swipeToNextViewController];
-        }
-    }
 }
 
 #pragma mark - UINavigationScrollDelegate

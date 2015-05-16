@@ -7,7 +7,6 @@
 //
 
 #import "BaseModelController.h"
-#import "ContainerViewController.h"
 
 @interface BaseModelController ()
 @end

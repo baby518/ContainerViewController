@@ -22,8 +22,7 @@ NSString *const IDInStoryBoard = @"ChildViewController";
     
     //    self.modelController = modelController;
     //    [self setModelController:modelController startIndex:4];
-    //    [self setModelController:modelController startIndex:4 useScrollView:YES];
-    [self setModelController:modelController startIndex:6 useScrollView:YES useLargeReuse:YES];
+    [self setModelController:modelController startIndex:6 cacheSize:7];
 }
 
 - (void)viewDidLoad {
