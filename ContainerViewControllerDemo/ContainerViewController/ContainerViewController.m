@@ -54,8 +54,8 @@ CGFloat const NavigationScrollHeight = 32.0;
 @implementation ContainerViewController
 
 - (void)awakeFromNib {
-    _viewControllerCacheStack = [[NSMutableArray alloc] init];
-    _viewControllerCacheIndex = [[NSMutableArray alloc] init];
+    _viewControllerCacheStack = [NSMutableArray array];
+    _viewControllerCacheIndex = [NSMutableArray array];
     [self setupScrollModel];
     NSLog(@"ContainerViewController awakeFromNib");
     // avoid offset

@@ -74,9 +74,22 @@ CGFloat const ScrollItemMargin = 8.0;
     CGFloat scrollWidth = 0.0f;
     for (NSInteger i = 0; i < self.count; i++) {
         NSString *title = (NSString *) self.titleArray[i];
-        CGFloat titleWidth = [title sizeWithFont:[UIFont systemFontOfSize:FontSizeUnselect]
-                               constrainedToSize:CGSizeMake(self.frameWidth, self.scrollHeight)
-                                   lineBreakMode:NSLineBreakByTruncatingTail].width;
+        // get right width of title.
+// before IOS 7.0
+//        CGFloat titleWidth = [title sizeWithFont:[UIFont systemFontOfSize:FontSizeUnselect]
+//                               constrainedToSize:CGSizeMake(self.frameWidth, self.scrollHeight)
+//                                   lineBreakMode:NSLineBreakByTruncatingTail].width;
+// after IOS 7.0
+//      method 1
+//        CGFloat titleWidth = [title boundingRectWithSize:CGSizeMake(self.frameWidth, self.scrollHeight)
+//                                                 options:NSStringDrawingTruncatesLastVisibleLine |
+//                                                         NSStringDrawingUsesLineFragmentOrigin |
+//                                                         NSStringDrawingUsesFontLeading
+//                                              attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:FontSizeUnselect]}
+//                                                 context:nil].size.width;
+//      method 2
+        CGFloat titleWidth = [title sizeWithAttributes:@{NSFontAttributeName : [UIFont systemFontOfSize:FontSizeUnselect]}].width;
+
         titleWidth = MAX(titleWidth + ScrollItemMargin * 2, ScrollItemMinWidth);
 
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
