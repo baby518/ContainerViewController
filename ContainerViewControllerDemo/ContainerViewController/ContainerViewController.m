@@ -292,10 +292,11 @@ CGFloat const NavigationScrollHeight = 32.0;
     // set current position.
     CGFloat offsetX = startX + pageViewRect.size.width * self.index;
     [self.scrollView setContentOffset:CGPointMake(offsetX, pageViewRect.origin.y) animated:NO];
-    [self viewDidBringToFront:self.index];
+    UIViewController *viewController = self.viewControllerCacheStack.lastObject;
+    [self viewDidBringToFront:viewController atIndex:self.index];
 }
 
-- (void)viewDidBringToFront:(NSUInteger)index {
+- (void)viewDidBringToFront:(UIViewController *)viewController atIndex:(NSUInteger)index {
     if (self.navScrollView != nil) {
         [self.navScrollView setIndex:index];
     }

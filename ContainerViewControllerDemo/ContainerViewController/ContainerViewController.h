@@ -15,11 +15,11 @@
 @property(strong, nonatomic) BaseModelController *modelController;
 @property(strong, nonatomic) UIColor *barTintColor;
 
-/* doit in awakeFromNib which is before viewDidLoad.*/
+/* do it in awakeFromNib which is before viewDidLoad.*/
 - (void)setupScrollModel;
 - (void)setModelController:(BaseModelController *)modelController;
 - (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index;
 - (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index cacheSize:(NSUInteger)cacheSize;
 - (void)gotoViewControllerAtIndex:(NSUInteger)index;
-- (void)viewDidBringToFront:(NSUInteger)index;
+- (void)viewDidBringToFront:(UIViewController *)viewController atIndex:(NSUInteger)index;
 @end
