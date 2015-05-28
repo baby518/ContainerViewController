@@ -142,9 +142,10 @@ CGFloat const NavigationScrollHeight = 32.0;
 //        // Load resources for iOS 7 or later
 //        self.navigationController.navigationBar.barTintColor = self.barTintColor;
 //    }
-    if (self.navScrollView != nil) {
-        [self.navScrollView setBarTintColor:self.barTintColor];
-    }
+
+//    if (self.navScrollView != nil) {
+//        [self.navScrollView setBarTintColor:self.barTintColor];
+//    }
 }
 
 - (UIViewController *)getViewControllerFromModel:(BaseModelController *)model atIndex:(NSUInteger)index {
