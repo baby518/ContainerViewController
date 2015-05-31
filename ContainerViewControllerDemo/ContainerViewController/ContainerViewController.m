@@ -264,6 +264,9 @@ CGFloat const NavigationScrollHeight = 32.0;
             index = self.count - 1;
         }
 
+        // current viewController return to back's callback.
+        [self viewDidReturnToBack:self.currentViewController atIndex:self.index];
+
         self.index = index;
 
         if (index >= 1) {
@@ -301,6 +304,9 @@ CGFloat const NavigationScrollHeight = 32.0;
     if (self.navScrollView != nil) {
         [self.navScrollView setIndex:index];
     }
+}
+
+- (void)viewDidReturnToBack:(UIViewController *)viewController atIndex:(NSUInteger)index {
 }
 
 #pragma mark - ScrollView

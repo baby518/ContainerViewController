@@ -22,4 +22,5 @@
 - (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index cacheSize:(NSUInteger)cacheSize;
 - (void)gotoViewControllerAtIndex:(NSUInteger)index;
 - (void)viewDidBringToFront:(UIViewController *)viewController atIndex:(NSUInteger)index;
+- (void)viewDidReturnToBack:(UIViewController *)viewController atIndex:(NSUInteger)index;
 @end
