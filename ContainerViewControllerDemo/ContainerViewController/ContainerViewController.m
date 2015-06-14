@@ -32,7 +32,7 @@
 @end
 
 CGFloat const SystemStatusBarHeight = 20.0;
-CGFloat const NavigationScrollHeight = 32.0;
+CGFloat const DefaultNavigationScrollHeight = 32.0;
 
 @interface ContainerViewController () <UIScrollViewDelegate, UINavigationScrollDelegate>
 @property(strong, nonatomic) UIViewController *currentViewController;
@@ -54,6 +54,7 @@ CGFloat const NavigationScrollHeight = 32.0;
 @implementation ContainerViewController
 
 - (void)awakeFromNib {
+    _navigationScrollHeight = DefaultNavigationScrollHeight;
     _viewControllerCacheStack = [NSMutableArray array];
     _viewControllerCacheIndex = [NSMutableArray array];
     [self setupScrollModel];
@@ -88,8 +89,8 @@ CGFloat const NavigationScrollHeight = 32.0;
 - (UIScrollView *)scrollView {
     if (_scrollView == nil) {
         CGFloat startY = self.navigationController.isNavigationBarHidden ? SystemStatusBarHeight : 0.0f;
-        _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, startY + NavigationScrollHeight, self.frameWidth, self.frameHeight - NavigationScrollHeight)];
-        _scrollView.contentSize = CGSizeMake(self.frameWidth * self.count, self.frameHeight - NavigationScrollHeight);
+        _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0.0, startY + self.navigationScrollHeight, self.frameWidth, self.frameHeight - self.navigationScrollHeight)];
+        _scrollView.contentSize = CGSizeMake(self.frameWidth * self.count, self.frameHeight - self.navigationScrollHeight);
         _scrollView.scrollEnabled = YES;
         _scrollView.delegate = self;
         _scrollView.bounces = NO;
@@ -104,7 +105,7 @@ CGFloat const NavigationScrollHeight = 32.0;
     if (self.count <= 0) return nil;
     if (_navScrollView == nil) {
         CGFloat startY = self.navigationController.isNavigationBarHidden ? SystemStatusBarHeight : 0.0f;
-        _navScrollView = [[UINavigationScrollView alloc] initWithFrame:CGRectMake(0.0, startY, self.frameWidth, NavigationScrollHeight) titleArray:self.modelController.titleArray];
+        _navScrollView = [[UINavigationScrollView alloc] initWithFrame:CGRectMake(0.0, startY, self.frameWidth, self.navigationScrollHeight) titleArray:self.modelController.titleArray];
         _navScrollView.delegate = self;
         _navScrollView.index = self.currentIndex;
     }

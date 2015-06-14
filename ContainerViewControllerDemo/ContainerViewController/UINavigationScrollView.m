@@ -72,8 +72,18 @@ CGFloat const ScrollItemMargin = 8.0;
     self.navScrollView.delegate = self;
 
     CGFloat scrollWidth = 0.0f;
-    for (NSInteger i = 0; i < self.count; i++) {
+    for (NSUInteger i = 0; i < self.count; i++) {
         NSString *title = (NSString *) self.titleArray[i];
+
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        button.tag = i + 100;
+
+        button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+        [button setTitle:title forState:UIControlStateNormal];
+        button.titleLabel.font = [UIFont systemFontOfSize:FontSizeUnselect];
+        [button setTitleColor:self.fontColorUnselect forState:UIControlStateNormal];
+        [button setTitleColor:self.fontColorSelect forState:UIControlStateSelected];
+
         // get right width of title.
 // before IOS 7.0
 //        CGFloat titleWidth = [title sizeWithFont:[UIFont systemFontOfSize:FontSizeUnselect]
@@ -88,19 +98,10 @@ CGFloat const ScrollItemMargin = 8.0;
 //                                              attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:FontSizeUnselect]}
 //                                                 context:nil].size.width;
 //      method 2
-        CGFloat titleWidth = [title sizeWithAttributes:@{NSFontAttributeName : [UIFont systemFontOfSize:FontSizeUnselect]}].width;
+        CGFloat titleWidth = [title sizeWithAttributes:@{NSFontAttributeName : button.titleLabel.font}].width;
 
         titleWidth = MAX(titleWidth + ScrollItemMargin * 2, ScrollItemMinWidth);
-
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         [button setFrame:CGRectMake(scrollWidth, 0.0, titleWidth, self.scrollHeight)];
-        button.tag = i + 100;
-
-        button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
-        [button setTitle:title forState:UIControlStateNormal];
-        button.titleLabel.font = [UIFont systemFontOfSize:FontSizeUnselect];
-        [button setTitleColor:self.fontColorUnselect forState:UIControlStateNormal];
-        [button setTitleColor:self.fontColorSelect forState:UIControlStateSelected];
 
         [button addTarget:self action:@selector(selectTitle:) forControlEvents:UIControlEventTouchUpInside];
 

@@ -14,6 +14,7 @@
 @property(nonatomic, assign, readonly) NSUInteger currentIndex;
 @property(strong, nonatomic) BaseModelController *modelController;
 @property(strong, nonatomic) UIColor *barTintColor;
+@property(assign, nonatomic) CGFloat navigationScrollHeight;
 
 /* do it in awakeFromNib which is before viewDidLoad.*/
 - (void)setupScrollModel;
