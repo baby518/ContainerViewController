@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A8E2B15539DFECEEBD8F8B81 /* BaseModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A8E2B50CD63CA2669C973489 /* BaseModelController.m */; };
 		A8E2B3EC2370BC4EEAFB32E1 /* DemoChildViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A8E2BF552480661CB4216B73 /* DemoChildViewController.m */; };
-		A8E2B95D2F580618E02F15C2 /* ContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A8E2B703594D2B801AEF090C /* ContainerViewController.m */; };
 		A8E2B9BEB939361FCA9CA0B0 /* DemoModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = A8E2B85E01CE3C5EB4A3CE5D /* DemoModelController.m */; };
 		D4BCC4AC1AE68D2900440CE8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D4BCC4AB1AE68D2900440CE8 /* main.m */; };
 		D4BCC4AF1AE68D2900440CE8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D4BCC4AE1AE68D2900440CE8 /* AppDelegate.m */; };
@@ -17,18 +15,16 @@
 		D4BCC4B81AE68D2900440CE8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D4BCC4B61AE68D2900440CE8 /* Main.storyboard */; };
 		D4BCC4BA1AE68D2900440CE8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D4BCC4B91AE68D2900440CE8 /* Images.xcassets */; };
 		D4BCC4BD1AE68D2900440CE8 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4BCC4BB1AE68D2900440CE8 /* LaunchScreen.xib */; };
-		D4DAA5311AFCF78E004E20DC /* UINavigationScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DAA5301AFCF78E004E20DC /* UINavigationScrollView.m */; };
+		D4DA8B5D1B346D49000DC0E8 /* BaseModelController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DA8B581B346D49000DC0E8 /* BaseModelController.m */; };
+		D4DA8B5E1B346D49000DC0E8 /* ContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DA8B5A1B346D49000DC0E8 /* ContainerViewController.m */; };
+		D4DA8B5F1B346D49000DC0E8 /* UINavigationScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = D4DA8B5C1B346D49000DC0E8 /* UINavigationScrollView.m */; };
 		D4EFB9421AFBCC3A004B8F0D /* DemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4EFB9411AFBCC3A004B8F0D /* DemoViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A8E2B1727FFFF47654DBBC13 /* DemoModelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoModelController.h; sourceTree = "<group>"; };
-		A8E2B34AC8D930D2B3874743 /* BaseModelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseModelController.h; sourceTree = "<group>"; };
 		A8E2B4427F9D2023CF9FCDDB /* DemoChildViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoChildViewController.h; sourceTree = "<group>"; };
-		A8E2B50CD63CA2669C973489 /* BaseModelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseModelController.m; sourceTree = "<group>"; };
-		A8E2B703594D2B801AEF090C /* ContainerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContainerViewController.m; sourceTree = "<group>"; };
 		A8E2B85E01CE3C5EB4A3CE5D /* DemoModelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoModelController.m; sourceTree = "<group>"; };
-		A8E2BBAB0AEA9FDAB833995A /* ContainerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContainerViewController.h; sourceTree = "<group>"; };
 		A8E2BF552480661CB4216B73 /* DemoChildViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoChildViewController.m; sourceTree = "<group>"; };
 		D4BCC4A61AE68D2900440CE8 /* ContainerViewControllerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ContainerViewControllerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4BCC4AA1AE68D2900440CE8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -39,8 +35,12 @@
 		D4BCC4B71AE68D2900440CE8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D4BCC4B91AE68D2900440CE8 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D4BCC4BC1AE68D2900440CE8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		D4DAA52F1AFCF78E004E20DC /* UINavigationScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UINavigationScrollView.h; sourceTree = "<group>"; };
-		D4DAA5301AFCF78E004E20DC /* UINavigationScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UINavigationScrollView.m; sourceTree = "<group>"; };
+		D4DA8B571B346D49000DC0E8 /* BaseModelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseModelController.h; sourceTree = "<group>"; };
+		D4DA8B581B346D49000DC0E8 /* BaseModelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseModelController.m; sourceTree = "<group>"; };
+		D4DA8B591B346D49000DC0E8 /* ContainerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContainerViewController.h; sourceTree = "<group>"; };
+		D4DA8B5A1B346D49000DC0E8 /* ContainerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContainerViewController.m; sourceTree = "<group>"; };
+		D4DA8B5B1B346D49000DC0E8 /* UINavigationScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UINavigationScrollView.h; sourceTree = "<group>"; };
+		D4DA8B5C1B346D49000DC0E8 /* UINavigationScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UINavigationScrollView.m; sourceTree = "<group>"; };
 		D4EFB9401AFBCC3A004B8F0D /* DemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoViewController.h; sourceTree = "<group>"; };
 		D4EFB9411AFBCC3A004B8F0D /* DemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -56,22 +56,10 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A8E2BD970612B955EEDC9A99 /* ContainerViewController */ = {
-			isa = PBXGroup;
-			children = (
-				A8E2B34AC8D930D2B3874743 /* BaseModelController.h */,
-				A8E2B50CD63CA2669C973489 /* BaseModelController.m */,
-				A8E2BBAB0AEA9FDAB833995A /* ContainerViewController.h */,
-				A8E2B703594D2B801AEF090C /* ContainerViewController.m */,
-				D4DAA52F1AFCF78E004E20DC /* UINavigationScrollView.h */,
-				D4DAA5301AFCF78E004E20DC /* UINavigationScrollView.m */,
-			);
-			path = ContainerViewController;
-			sourceTree = "<group>";
-		};
 		D4BCC49D1AE68D2900440CE8 = {
 			isa = PBXGroup;
 			children = (
+				D4DA8B561B346D49000DC0E8 /* ContainerViewController */,
 				D4BCC4A81AE68D2900440CE8 /* ContainerViewControllerDemo */,
 				D4BCC4A71AE68D2900440CE8 /* Products */,
 			);
@@ -95,7 +83,6 @@
 				D4BCC4BB1AE68D2900440CE8 /* LaunchScreen.xib */,
 				D4BCC4B01AE68D2900440CE8 /* ContainerViewControllerDemo.xcdatamodeld */,
 				D4BCC4A91AE68D2900440CE8 /* Supporting Files */,
-				A8E2BD970612B955EEDC9A99 /* ContainerViewController */,
 				A8E2B4427F9D2023CF9FCDDB /* DemoChildViewController.h */,
 				A8E2BF552480661CB4216B73 /* DemoChildViewController.m */,
 				A8E2B1727FFFF47654DBBC13 /* DemoModelController.h */,
@@ -113,6 +100,19 @@
 				D4BCC4AB1AE68D2900440CE8 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D4DA8B561B346D49000DC0E8 /* ContainerViewController */ = {
+			isa = PBXGroup;
+			children = (
+				D4DA8B571B346D49000DC0E8 /* BaseModelController.h */,
+				D4DA8B581B346D49000DC0E8 /* BaseModelController.m */,
+				D4DA8B591B346D49000DC0E8 /* ContainerViewController.h */,
+				D4DA8B5A1B346D49000DC0E8 /* ContainerViewController.m */,
+				D4DA8B5B1B346D49000DC0E8 /* UINavigationScrollView.h */,
+				D4DA8B5C1B346D49000DC0E8 /* UINavigationScrollView.m */,
+			);
+			path = ContainerViewController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -189,11 +189,11 @@
 				D4BCC4B21AE68D2900440CE8 /* ContainerViewControllerDemo.xcdatamodeld in Sources */,
 				D4BCC4AF1AE68D2900440CE8 /* AppDelegate.m in Sources */,
 				D4BCC4AC1AE68D2900440CE8 /* main.m in Sources */,
-				A8E2B15539DFECEEBD8F8B81 /* BaseModelController.m in Sources */,
-				A8E2B95D2F580618E02F15C2 /* ContainerViewController.m in Sources */,
-				D4DAA5311AFCF78E004E20DC /* UINavigationScrollView.m in Sources */,
+				D4DA8B5D1B346D49000DC0E8 /* BaseModelController.m in Sources */,
 				D4EFB9421AFBCC3A004B8F0D /* DemoViewController.m in Sources */,
 				A8E2B3EC2370BC4EEAFB32E1 /* DemoChildViewController.m in Sources */,
+				D4DA8B5F1B346D49000DC0E8 /* UINavigationScrollView.m in Sources */,
+				D4DA8B5E1B346D49000DC0E8 /* ContainerViewController.m in Sources */,
 				A8E2B9BEB939361FCA9CA0B0 /* DemoModelController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
