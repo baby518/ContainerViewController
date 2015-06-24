@@ -18,8 +18,6 @@
     if (self) {
         // Create the data model.
         titleArray = @[@"第一页", @"第二页", @"第三页", @"第四页", @"第五页", @"第六页", @"第七页", @"第八页", @"第九页", @"第十页"];
-
-        count = titleArray.count;
     }
     return self;
 }

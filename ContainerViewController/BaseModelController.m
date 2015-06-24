@@ -22,7 +22,7 @@
 }
 
 - (NSUInteger)count {
-    return count;
+    return titleArray == nil ? 0 : titleArray.count;
 }
 
 - (NSArray *)titleArray {
