@@ -9,28 +9,6 @@
 #import "ContainerViewController.h"
 #import "UINavigationScrollView.h"
 
-/*
-* override UIScrollView shouldRecognizeSimultaneouslyWithGestureRecognizer,
-* make UIScreenEdgePanGestureRecognizer enable.*/
-@interface UIScrollView (AllowEdgePanGesture)
-@end
-
-@implementation UIScrollView (AllowEdgePanGesture)
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]])
-            && [otherGestureRecognizer isKindOfClass:[UIScreenEdgePanGestureRecognizer class]];
-}
-
-//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-//    return YES;
-//}
-
-//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-//    return ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]])
-//            && [otherGestureRecognizer isKindOfClass:[UIScreenEdgePanGestureRecognizer class]];
-//}
-@end
-
 CGFloat const SystemStatusBarHeight = 20.0;
 CGFloat const DefaultNavigationScrollHeight = 32.0;
 
