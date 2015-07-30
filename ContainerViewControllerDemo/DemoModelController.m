@@ -29,7 +29,7 @@
 - (UIViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard childID:(NSString *)idString {
     // Return the data view controller for the given index.
     if ((self.count == 0) || (index >= self.count)) {
-        return nil;
+        return [[UIViewController alloc] init];
     }
     
     // Create a new view controller and pass suitable data.
