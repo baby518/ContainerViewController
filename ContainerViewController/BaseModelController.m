@@ -16,6 +16,7 @@
 - (instancetype)initWithId:(NSString *)idInStoryBoard {
     self = [super init];
     if (self) {
+        titleArray = [NSMutableArray array];
         _idInStoryBoard = idInStoryBoard;
     }
     return self;

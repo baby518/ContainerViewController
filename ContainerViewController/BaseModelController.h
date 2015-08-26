@@ -11,7 +11,7 @@
 
 @interface BaseModelController : NSObject {
 @protected
-    NSArray *titleArray;
+    NSMutableArray *titleArray;
 }
 @property(nonatomic, strong) NSString *idInStoryBoard;
 @property(nonatomic, assign, readonly) NSUInteger count;
