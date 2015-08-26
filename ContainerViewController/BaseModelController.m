@@ -32,7 +32,7 @@
 - (UIViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
     // Subclasses must override this method。
     [self doesNotRecognizeSelector:@selector(viewControllerAtIndex::)];
-    return [[UIViewController alloc] init];
+    return nil;
 }
 
 @end

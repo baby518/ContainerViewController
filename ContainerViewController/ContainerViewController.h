@@ -17,6 +17,7 @@
 @property(assign, nonatomic) CGFloat navigationScrollHeight;
 
 /* do it in awakeFromNib which is before viewDidLoad.*/
+- (void)initScrollSubViews;
 - (void)setupScrollModel;
 - (void)setModelController:(BaseModelController *)modelController;
 - (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index;

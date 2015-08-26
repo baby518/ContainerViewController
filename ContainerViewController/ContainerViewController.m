@@ -49,14 +49,11 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self.view addSubview:self.scrollView];
-    // show all views
-    [self showScrollSubViews];
-    if (self.navScrollView != nil) {
-        [self.view addSubview:self.navScrollView];
-    }
     // set default
     self.barTintColor = [UIColor whiteColor];
+    [self.view addSubview:self.scrollView];
+
+    [self initScrollSubViews];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -108,6 +105,13 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
     } else {
         return self.navigationController.navigationBar.frame.size.height;
     }
+}
+
+- (NSUInteger)MAXCacheSize {
+    if (_MAXCacheSize == 0) {
+        _MAXCacheSize = 1;
+    }
+    return _MAXCacheSize;
 }
 
 - (void)setBarTintColor:(UIColor *)barTintColor {
@@ -199,12 +203,16 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
         }
         // create new one
         UIViewController *viewController = [self getViewControllerFromModel:self.modelController atIndex:index];
-        if (index == self.index) {
-            _currentViewController = viewController;
+        if (viewController != nil) {
+            if (index == self.index) {
+                _currentViewController = viewController;
+            }
+            [self addChildViewController:viewController];
+            [self.viewControllerCacheStack addObject:viewController];
+            [self.viewControllerCacheIndex addObject:@(index)];
+        } else {
+            [self addChildViewController:[[UIViewController alloc] init]];
         }
-        [self addChildViewController:viewController];
-        [self.viewControllerCacheStack addObject:viewController];
-        [self.viewControllerCacheIndex addObject:@(index)];
     }
 }
 
@@ -289,6 +297,15 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
 }
 
 #pragma mark - ScrollView
+
+- (void)initScrollSubViews {
+    // show all views
+    [self showScrollSubViews];
+    if (self.navScrollView != nil) {
+        [self.view addSubview:self.navScrollView];
+    }
+}
+
 - (void)setupScrollModel {
     NSLog(@"ContainerViewController setupScrollView");
 }
