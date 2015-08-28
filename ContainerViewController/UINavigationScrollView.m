@@ -46,6 +46,10 @@ CGFloat const ScrollItemMargin = 8.0;
     return self;
 }
 
+- (NSUInteger)titleCount {
+    return self.titleArray.count;
+}
+
 - (UIScrollView *)scrollView {
     return self.navScrollView;
 }

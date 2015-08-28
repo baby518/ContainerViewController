@@ -17,12 +17,14 @@
 @property(assign, nonatomic) CGFloat navigationScrollHeight;
 
 /* do it in awakeFromNib which is before viewDidLoad.*/
-- (void)initScrollSubViews;
+- (void)rebuildScrollSubViews;
 - (void)setupScrollModel;
-- (void)setModelController:(BaseModelController *)modelController;
-- (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index;
-- (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index cacheSize:(NSUInteger)cacheSize;
 - (void)gotoViewControllerAtIndex:(NSUInteger)index;
 - (void)viewDidBringToFront:(UIViewController *)viewController atIndex:(NSUInteger)index;
 - (void)viewDidReturnToBack:(UIViewController *)viewController atIndex:(NSUInteger)index;
+
+- (void)deleteAllCacheStack;
+- (void)rebuildCacheStack;
+- (void)rebuildCacheStack:(NSUInteger)startIndex;
+- (void)rebuildCacheStack:(NSUInteger)startIndex withCacheSize:(NSUInteger)cacheSize;
 @end

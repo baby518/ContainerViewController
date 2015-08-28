@@ -20,5 +20,7 @@
 
 - (instancetype)initWithFrame:(CGRect)frame titleArray:(NSArray *)titles;
 
+- (NSUInteger)titleCount;
+
 - (BOOL)highLightIndex:(NSUInteger)index;
 @end

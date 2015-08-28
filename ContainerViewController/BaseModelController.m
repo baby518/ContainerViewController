@@ -26,7 +26,7 @@
     return titleArray == nil ? 0 : titleArray.count;
 }
 
-- (NSArray *)titleArray {
+- (NSMutableArray *)titleArray {
     return titleArray;
 }
 
@@ -36,4 +36,13 @@
     return nil;
 }
 
+- (void)addChildWithTitle:(NSString *)title {
+    [titleArray addObject:title];
+}
+
+- (void)delChildAtIndex:(NSUInteger)index {
+    if (index < titleArray.count) {
+        [titleArray removeObjectAtIndex:index];
+    }
+}
 @end

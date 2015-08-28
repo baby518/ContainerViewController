@@ -11,18 +11,22 @@
 
 NSString *const IDInStoryBoard = @"ChildViewController";
 @interface DemoViewController ()
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *addButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *deleteButton;
+//@property(strong, nonatomic) DemoModelController *thisModelController;
 
+- (IBAction)addChild:(UIBarButtonItem *)sender;
+- (IBAction)deleteCurrentChild:(UIBarButtonItem *)sender;
 @end
 
 @implementation DemoViewController
 
 /* override from super*/
 - (void)setupScrollModel {
-    DemoModelController *modelController = [[DemoModelController alloc] initWithId:IDInStoryBoard];
+    self.modelController = [[DemoModelController alloc] initWithId:IDInStoryBoard];
     
     //    self.modelController = modelController;
-    //    [self setModelController:modelController startIndex:4];
-    [self setModelController:modelController startIndex:6 cacheSize:7];
+    [self rebuildCacheStack:0 withCacheSize:self.count];
 }
 
 - (void)viewDidLoad {
@@ -47,4 +51,28 @@ NSString *const IDInStoryBoard = @"ChildViewController";
 }
 */
 
+- (IBAction)addChild:(UIBarButtonItem *)sender {
+    // TODO 1. add model title array
+    NSUInteger count = self.modelController.count;
+    NSString *newTitle = [NSString stringWithFormat:@"New %ld", count + 1];
+    [self.modelController addChildWithTitle:newTitle];
+    // TODO 2. rebuildCacheStack
+    [self deleteAllCacheStack];
+    [self rebuildCacheStack];
+    // TODO 3. rebuildScrollSubViews : nav tab items.
+    [self rebuildScrollSubViews];
+    // TODO 4. reload current childViewController if need.
+
+}
+
+- (IBAction)deleteCurrentChild:(UIBarButtonItem *)sender {
+    // TODO 1. add model title array
+    [self.modelController delChildAtIndex:self.currentIndex];
+    // TODO 2. rebuildCacheStack
+    [self deleteAllCacheStack];
+    [self rebuildCacheStack];
+    // TODO 3. rebuildScrollSubViews : nav tab items.
+    [self rebuildScrollSubViews];
+    // TODO 4. reload current childViewController if need.
+}
 @end

@@ -53,7 +53,7 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
     self.barTintColor = [UIColor whiteColor];
     [self.view addSubview:self.scrollView];
 
-    [self initScrollSubViews];
+    [self rebuildScrollSubViews];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -77,7 +77,6 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
 }
 
 - (UINavigationScrollView *)navScrollView {
-    if (self.count <= 0) return nil;
     if (_navScrollView == nil) {
         CGFloat startY = self.navigationController.isNavigationBarHidden ? SystemStatusBarHeight : 0.0f;
         _navScrollView = [[UINavigationScrollView alloc] initWithFrame:CGRectMake(0.0, startY, self.frameWidth, self.navigationScrollHeight) titleArray:self.modelController.titleArray];
@@ -109,7 +108,7 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
 
 - (NSUInteger)MAXCacheSize {
     if (_MAXCacheSize == 0) {
-        _MAXCacheSize = 1;
+        _MAXCacheSize = self.count;
     }
     return _MAXCacheSize;
 }
@@ -137,36 +136,9 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
 
     return viewController;
 }
-- (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index cacheSize:(NSUInteger)cacheSize {
-    _modelController = modelController;
-    _count = self.modelController.count;
-    if (cacheSize <= 0) cacheSize = 1;
-    if (cacheSize > self.count) cacheSize = self.count;
-    _MAXCacheSize = cacheSize;
-    NSLog(@"setModelController : %lu/%lu", index, self.count);
-    if (index >= self.count - 1) {
-        _index = self.count - 1;
-    } else if (index <= 0) {
-        _index = 0;
-    } else {
-        _index = index;
-    }
 
-    if (self.index >= 1) {
-        [self addViewControllerAtIndex:self.index - 1];
-    }
-    if (self.index + 2 <= self.count) {
-        [self addViewControllerAtIndex:self.index + 1];
-    }
-    [self addViewControllerAtIndex:self.index];
-}
-
-- (void)setModelController:(BaseModelController *)modelController startIndex:(NSUInteger)index {
-    [self setModelController:modelController startIndex:index cacheSize:5];
-}
-
-- (void)setModelController:(BaseModelController *)modelController {
-    [self setModelController:modelController startIndex:0];
+- (NSUInteger)count {
+    return self.modelController.count;
 }
 
 - (void)gotoViewControllerAtIndex:(NSUInteger)index {
@@ -175,7 +147,54 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
 }
 
 #pragma mark - used for reuse.
+- (void)deleteAllCacheStack {
+    // clear all
+    for (UIViewController *viewController in self.viewControllerCacheStack) {
+        [viewController removeFromParentViewController];
+        [viewController.view removeFromSuperview];
+    }
 
+    [self.viewControllerCacheStack removeAllObjects];
+    [self.viewControllerCacheIndex removeAllObjects];
+}
+
+- (void)rebuildCacheStack {
+    [self rebuildCacheStack:self.index];
+}
+
+- (void)rebuildCacheStack:(NSUInteger)startIndex {
+    [self rebuildCacheStack:startIndex withCacheSize:self.MAXCacheSize];
+}
+
+- (void)rebuildCacheStack:(NSUInteger)startIndex withCacheSize:(NSUInteger)cacheSize {
+    if (cacheSize <= 0) cacheSize = 0;
+    if (cacheSize > self.count) cacheSize = self.count;
+    _MAXCacheSize = cacheSize;
+    NSLog(@"rebuildCacheStack startIndex : %lu/%lu, cache : %ld", self.index, self.count, cacheSize);
+
+    if (startIndex >= self.count - 1) {
+        _index = self.count - 1;
+    } else if (startIndex <= 0) {
+        _index = 0;
+    } else {
+        _index = startIndex;
+    }
+
+    if (self.count != 0) {
+        if (self.index >= 1) {
+            [self addViewControllerAtIndex:self.index - 1];
+        }
+        if (self.index + 2 <= self.count) {
+            [self addViewControllerAtIndex:self.index + 1];
+        }
+        [self addViewControllerAtIndex:self.index];
+        // clear other.
+    } else {
+        [self deleteAllCacheStack];
+    }
+}
+
+/** add viewController in cache. */
 - (void)addViewControllerAtIndex:(NSUInteger)index {
     // if index is in cache, find view controller in cache.
     BOOL isIndexCached = [self.viewControllerCacheIndex containsObject:@(index)];
@@ -183,6 +202,7 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
         NSUInteger indexCached = [self.viewControllerCacheIndex indexOfObject:@(index)];
         UIViewController *viewController = self.viewControllerCacheStack[indexCached];
 
+        // move current object to last index.
         [self.viewControllerCacheStack removeObject:viewController];
         [self.viewControllerCacheStack addObject:viewController];
         [self.viewControllerCacheIndex removeObject:@(index)];
@@ -256,13 +276,7 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
 
         self.index = index;
 
-        if (index >= 1) {
-            [self addViewControllerAtIndex:index - 1];
-        }
-        if (index + 2 <= self.count) {
-            [self addViewControllerAtIndex:index + 1];
-        }
-        [self addViewControllerAtIndex:index];
+        [self rebuildCacheStack];
         // show all views
         [self showScrollSubViews];
     }
@@ -298,10 +312,15 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
 
 #pragma mark - ScrollView
 
-- (void)initScrollSubViews {
+- (void)rebuildScrollSubViews {
     // show all views
     [self showScrollSubViews];
     if (self.navScrollView != nil) {
+        // set nil to re init if not same.
+        if (self.navScrollView.titleCount != self.modelController.titleArray.count) {
+            [self.navScrollView removeFromSuperview];
+            _navScrollView = nil;
+        }
         [self.view addSubview:self.navScrollView];
     }
 }

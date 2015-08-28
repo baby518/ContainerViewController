@@ -15,8 +15,12 @@
 }
 @property(nonatomic, strong) NSString *idInStoryBoard;
 @property(nonatomic, assign, readonly) NSUInteger count;
-@property(nonatomic, assign, readonly) NSArray *titleArray;
 
 - (instancetype)initWithId:(NSString *)idInStoryBoard;
 - (UIViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard;
+
+- (NSMutableArray *)titleArray;
+
+- (void)addChildWithTitle:(NSString *)title;
+- (void)delChildAtIndex:(NSUInteger)index;
 @end
