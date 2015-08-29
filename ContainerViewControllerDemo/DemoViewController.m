@@ -25,8 +25,7 @@ NSString *const IDInStoryBoard = @"ChildViewController";
 - (void)setupScrollModel {
     self.modelController = [[DemoModelController alloc] initWithId:IDInStoryBoard];
     
-    //    self.modelController = modelController;
-    [self rebuildCacheStack:0 withCacheSize:self.count];
+    [self rebuildCacheStack:0 withCacheSize:5];
 }
 
 - (void)viewDidLoad {
@@ -56,23 +55,13 @@ NSString *const IDInStoryBoard = @"ChildViewController";
     NSUInteger count = self.modelController.count;
     NSString *newTitle = [NSString stringWithFormat:@"New %ld", count + 1];
     [self.modelController addChildWithTitle:newTitle];
-    // TODO 2. rebuildCacheStack
-    [self deleteAllCacheStack];
-    [self rebuildCacheStack];
-    // TODO 3. rebuildScrollSubViews : nav tab items.
-    [self rebuildScrollSubViews];
-    // TODO 4. reload current childViewController if need.
+    // TODO 2. reload current childViewController if need.
 
 }
 
 - (IBAction)deleteCurrentChild:(UIBarButtonItem *)sender {
     // TODO 1. add model title array
     [self.modelController delChildAtIndex:self.currentIndex];
-    // TODO 2. rebuildCacheStack
-    [self deleteAllCacheStack];
-    [self rebuildCacheStack];
-    // TODO 3. rebuildScrollSubViews : nav tab items.
-    [self rebuildScrollSubViews];
-    // TODO 4. reload current childViewController if need.
+    // TODO 2. reload current childViewController if need.
 }
 @end

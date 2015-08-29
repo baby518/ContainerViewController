@@ -9,12 +9,17 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+@protocol ModelControllerDelegate <NSObject>
+- (void)modelCountChanged:(NSUInteger)prevCount :(NSUInteger)currCount;
+@end
+
 @interface BaseModelController : NSObject {
 @protected
     NSMutableArray *titleArray;
 }
 @property(nonatomic, strong) NSString *idInStoryBoard;
 @property(nonatomic, assign, readonly) NSUInteger count;
+@property(weak, nonatomic) id <ModelControllerDelegate> delegate;
 
 - (instancetype)initWithId:(NSString *)idInStoryBoard;
 - (UIViewController *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard;

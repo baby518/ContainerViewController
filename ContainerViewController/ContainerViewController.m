@@ -12,7 +12,7 @@
 CGFloat const SystemStatusBarHeight = 20.0;
 CGFloat const DefaultNavigationScrollHeight = 32.0;
 
-@interface ContainerViewController () <UIScrollViewDelegate, UINavigationScrollDelegate>
+@interface ContainerViewController () <UIScrollViewDelegate, UINavigationScrollDelegate, ModelControllerDelegate>
 @property(strong, nonatomic) UIViewController *currentViewController;
 @property(strong, nonatomic) NSMutableArray *viewControllerCacheStack;
 @property(strong, nonatomic) NSMutableArray *viewControllerCacheIndex;
@@ -59,6 +59,11 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)setModelController:(BaseModelController *)modelController {
+    _modelController = modelController;
+    _modelController.delegate = self;
 }
 
 - (UIScrollView *)scrollView {
@@ -317,7 +322,7 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
     [self showScrollSubViews];
     if (self.navScrollView != nil) {
         // set nil to re init if not same.
-        if (self.navScrollView.titleCount != self.modelController.titleArray.count) {
+        if (self.navScrollView.titleCount != self.count) {
             [self.navScrollView removeFromSuperview];
             _navScrollView = nil;
         }
@@ -334,6 +339,13 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
     [self gotoViewControllerAtIndex:index];
 }
 
+#pragma mark - ModelControllerDelegate
+- (void)modelCountChanged:(NSUInteger)prevCount :(NSUInteger)currCount {
+    NSLog(@"modelCountChanged %ld --> %ld", prevCount, currCount);
+    [self deleteAllCacheStack];
+    [self rebuildCacheStack];
+    [self rebuildScrollSubViews];
+}
 
 /*
 #pragma mark - Navigation

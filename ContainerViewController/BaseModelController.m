@@ -37,12 +37,21 @@
 }
 
 - (void)addChildWithTitle:(NSString *)title {
+    NSUInteger prevCount = titleArray.count;
     [titleArray addObject:title];
+    if (self.delegate != nil) {
+        [self.delegate modelCountChanged:prevCount :titleArray.count];
+    }
 }
 
 - (void)delChildAtIndex:(NSUInteger)index {
     if (index < titleArray.count) {
+        NSUInteger prevCount = titleArray.count;
         [titleArray removeObjectAtIndex:index];
+        if (self.delegate != nil) {
+            [self.delegate modelCountChanged:prevCount :titleArray.count];
+        }
     }
 }
+
 @end
