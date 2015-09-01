@@ -164,17 +164,19 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
 }
 
 - (void)rebuildCacheStack {
-    [self rebuildCacheStack:self.index];
+    [self rebuildCacheStackStartWith:self.index];
 }
 
-- (void)rebuildCacheStack:(NSUInteger)startIndex {
-    [self rebuildCacheStack:startIndex withCacheSize:self.MAXCacheSize];
+- (void)rebuildCacheStackStartWith:(NSUInteger)startIndex {
+    [self rebuildCacheStackStartWith:startIndex withCacheSize:self.targetCacheSize];
 }
 
-- (void)rebuildCacheStack:(NSUInteger)startIndex withCacheSize:(NSUInteger)cacheSize {
-    if (cacheSize <= 0) cacheSize = 0;
-    if (cacheSize > self.count) cacheSize = self.count;
-    _MAXCacheSize = cacheSize;
+- (void)rebuildCacheStackStartWith:(NSUInteger)startIndex withCacheSize:(NSUInteger)cacheSize {
+    if (cacheSize <= 0 || cacheSize > self.count) {
+        _MAXCacheSize = self.count;
+    } else {
+        _MAXCacheSize = cacheSize;
+    }
     NSLog(@"rebuildCacheStack startIndex : %lu/%lu, cache : %ld", self.index, self.count, cacheSize);
 
     if (startIndex >= self.count - 1) {
@@ -317,6 +319,12 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
 
 #pragma mark - ScrollView
 
+- (void)resetScrollViewContentSize {
+    if (_scrollView != nil) {
+        _scrollView.contentSize = CGSizeMake(self.frameWidth * self.count, self.frameHeight - self.navigationScrollHeight);
+    }
+}
+
 - (void)rebuildScrollSubViews {
     // show all views
     [self showScrollSubViews];
@@ -344,6 +352,7 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
     NSLog(@"modelCountChanged %ld --> %ld", prevCount, currCount);
     [self deleteAllCacheStack];
     [self rebuildCacheStack];
+    [self resetScrollViewContentSize];
     [self rebuildScrollSubViews];
 }
 

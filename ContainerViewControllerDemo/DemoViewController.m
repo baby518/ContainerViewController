@@ -13,7 +13,6 @@ NSString *const IDInStoryBoard = @"ChildViewController";
 @interface DemoViewController ()
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *addButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *deleteButton;
-//@property(strong, nonatomic) DemoModelController *thisModelController;
 
 - (IBAction)addChild:(UIBarButtonItem *)sender;
 - (IBAction)deleteCurrentChild:(UIBarButtonItem *)sender;
@@ -24,8 +23,8 @@ NSString *const IDInStoryBoard = @"ChildViewController";
 /* override from super*/
 - (void)setupScrollModel {
     self.modelController = [[DemoModelController alloc] initWithId:IDInStoryBoard];
-    
-    [self rebuildCacheStack:0 withCacheSize:5];
+    self.targetCacheSize = 5;
+    [self rebuildCacheStackStartWith:0];
 }
 
 - (void)viewDidLoad {

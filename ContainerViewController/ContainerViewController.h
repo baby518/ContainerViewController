@@ -15,6 +15,7 @@
 @property(strong, nonatomic) BaseModelController *modelController;
 @property(strong, nonatomic) UIColor *barTintColor;
 @property(assign, nonatomic) CGFloat navigationScrollHeight;
+@property(assign, nonatomic) NSUInteger targetCacheSize;
 
 /* do it in awakeFromNib which is before viewDidLoad.*/
 - (void)setupScrollModel;
@@ -23,6 +24,5 @@
 - (void)viewDidReturnToBack:(UIViewController *)viewController atIndex:(NSUInteger)index;
 
 - (void)rebuildCacheStack;
-- (void)rebuildCacheStack:(NSUInteger)startIndex;
-- (void)rebuildCacheStack:(NSUInteger)startIndex withCacheSize:(NSUInteger)cacheSize;
+- (void)rebuildCacheStackStartWith:(NSUInteger)startIndex;
 @end
