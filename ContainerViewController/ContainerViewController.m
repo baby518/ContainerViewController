@@ -348,8 +348,7 @@ CGFloat const DefaultNavigationScrollHeight = 32.0;
 }
 
 #pragma mark - ModelControllerDelegate
-- (void)modelCountChanged:(NSUInteger)prevCount :(NSUInteger)currCount {
-    NSLog(@"modelCountChanged %ld --> %ld", prevCount, currCount);
+- (void)modelCountChanged {
     [self deleteAllCacheStack];
     [self rebuildCacheStack];
     [self resetScrollViewContentSize];

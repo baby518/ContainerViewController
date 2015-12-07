@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 
 @protocol ModelControllerDelegate <NSObject>
-- (void)modelCountChanged:(NSUInteger)prevCount :(NSUInteger)currCount;
+- (void)modelCountChanged;
 @end
 
 @interface BaseModelController : NSObject {
